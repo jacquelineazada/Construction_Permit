@@ -1,61 +1,11 @@
 <template>
   <div class="page-wrapper">
-    <v-app-bar flat color="#0000CC" dark height="88">
-      <v-container
-        class="d-flex align-center justify-space-between py-0 px-6"
-        style="max-width: 1600px"
-      >
-        <div class="d-flex align-center">
-          <v-img
-            src="https://www2.naga.gov.ph/wp-content/uploads/2022/05/Naga_City_Official_Seal-1.png"
-            alt="LGU Seal"
-            width="85"
-            height="75"
-            contain
-            class="me-3"
-          />
-          <div>
-            <div
-              style="
-                font-size: 12px;
-                font-weight: 400;
-                color: white;
-                line-height: 1.2;
-              "
-            >
-              REPUBLIC OF THE PHILIPPINES
-            </div>
-            <div
-              style="
-                font-size: 15px;
-                font-weight: 700;
-                color: white;
-                line-height: 1.2;
-              "
-            >
-              CITY GOVERNMENT OF NAGA
-            </div>
-          </div>
-        </div>
-        <div class="d-none d-md-flex nav-links">
-          <v-btn text class="mx-2" style="color: white" to="/home">Home</v-btn>
-          <v-btn text class="mx-2" style="color: white" to="/services"
-            >Services</v-btn
-          >
-          <v-btn text class="mx-2" style="color: white" to="/about"
-            >About</v-btn
-          >
-        </div>
-      </v-container>
-    </v-app-bar>
-
+    <ApplicantHeader />
     <v-main>
       <v-container fluid class="pa-0">
         <section class="hero-section d-flex align-center justify-center">
           <v-container class="hero-content text-left">
-            <h1 class="hero-title">
-              One Stop Shop for<br />Construction Permits
-            </h1>
+            <h1 class="hero-title">One Stop Shop for<br />Construction Permits</h1>
             <p class="hero-subtitle">
               Fast, Efficient, and Convenient Permit Processing in Naga City
             </p>

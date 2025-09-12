@@ -1,59 +1,12 @@
 <template>
   <div class="page-wrapper">
-    <v-app-bar flat color="#0000CC" dark height="88">
-      <v-container
-        fluid
-        class="d-flex align-center justify-space-between py-0"
-        style="max-width: 1600px"
-      >
-        <div class="d-flex align-center">
-          <v-img
-            src="https://www2.naga.gov.ph/wp-content/uploads/2022/05/Naga_City_Official_Seal-1.png"
-            alt="LGU Seal"
-            width="85"
-            height="75"
-            contain
-            class="me-3"
-          />
-          <div>
-            <div
-              style="
-                font-size: 12px;
-                font-weight: 400;
-                color: white;
-                line-height: 1.2;
-              "
-            >
-              REPUBLIC OF THE PHILIPPINES
-            </div>
-            <div
-              style="
-                font-size: 15px;
-                font-weight: 700;
-                color: white;
-                line-height: 1.2;
-              "
-            >
-              CITY GOVERNMENT OF NAGA
-            </div>
-          </div>
-        </div>
-        <div class="d-none d-md-flex nav-links">
-          <v-btn text class="mx-2" style="color: white" to="/home">Home</v-btn>
-          <v-btn text class="mx-2" style="color: white" to="/services"
-            >Services</v-btn
-          >
-          <v-btn text class="mx-2" style="color: white" to="/about"
-            >About</v-btn
-          >
-        </div>
-      </v-container>
-    </v-app-bar>
+    <ApplicantHeader />
 
     <v-main>
       <v-container class="fill-height pa-8" fluid>
         <v-row align="center" justify="center" class="w-100">
           <v-col cols="12" md="7" class="pa-6">
+            <!-- Info Section -->
             <div class="info-section">
               <h2 class="info-title">Why Choose Online Application</h2>
               <v-row class="mt-8">
@@ -63,9 +16,9 @@
                   </div>
                   <h3 class="feature-title">Time-Saving</h3>
                   <p class="feature-description">
-                    Save valuable time by processing your permits online. No
-                    more waiting in long queues – complete everything from the
-                    comfort of your home or office.
+                    Save valuable time by processing your permits online. No more waiting
+                    in long queues – complete everything from the comfort of your home or
+                    office.
                   </p>
                 </v-col>
                 <v-col cols="12" sm="4" class="text-center">
@@ -74,9 +27,8 @@
                   </div>
                   <h3 class="feature-title">24/7 Access</h3>
                   <p class="feature-description">
-                    Access our services around the clock, every day of the year.
-                    Submit applications and track progress at any time that
-                    suits your schedule.
+                    Access our services around the clock, every day of the year. Submit
+                    applications and track progress at any time that suits your schedule.
                   </p>
                 </v-col>
                 <v-col cols="12" sm="4" class="text-center">
@@ -85,15 +37,15 @@
                   </div>
                   <h3 class="feature-title">Real-time Updates</h3>
                   <p class="feature-description">
-                    Stay informed with instant notifications about your
-                    application status. Receive timely updates and never miss
-                    important information.
+                    Stay informed with instant notifications about your application
+                    status. Receive timely updates and never miss important information.
                   </p>
                 </v-col>
               </v-row>
             </div>
           </v-col>
 
+          <!-- Login Card -->
           <v-col cols="12" md="4" class="pa-6">
             <v-card class="login-card pa-5" color="white">
               <v-card-title
@@ -105,8 +57,9 @@
                 Login to your account
               </v-card-subtitle>
               <v-card-text>
-                <v-form>
+                <v-form @submit.prevent="handleLogin">
                   <v-text-field
+                    v-model="username"
                     label="Email Address"
                     density="compact"
                     variant="outlined"
@@ -114,6 +67,7 @@
                   ></v-text-field>
 
                   <v-text-field
+                    v-model="user_password"
                     label="Password"
                     density="compact"
                     variant="outlined"
@@ -121,37 +75,33 @@
                     append-inner-icon="mdi-eye-off"
                   ></v-text-field>
 
-                  <div
-                    class="d-flex justify-space-between align-center mt-1 mb-4"
-                  >
+                  <div class="d-flex justify-space-between align-center mt-1 mb-4">
                     <v-checkbox-btn
                       label="Remember me"
                       class="ma-0 pa-0"
                     ></v-checkbox-btn>
-                    <a
-                      href="#"
-                      class="text-primary text-caption font-weight-medium"
+                    <a href="#" class="text-primary text-caption font-weight-medium"
                       >Forgot password?</a
                     >
                   </div>
 
                   <v-btn
+                    type="submit"
                     block
                     color="#4A00E0"
                     size="large"
                     class="login-btn"
-                    to="/locational"
                   >
                     Login
                   </v-btn>
 
+                  <div v-if="error" class="text-red text-center mt-2">
+                    {{ error }}
+                  </div>
+
                   <div class="text-center mt-6">
-                    <span class="text-grey-darken-1"
-                      >Don't have an account?</span
-                    >
-                    <a href="#" class="text-primary font-weight-bold ms-1"
-                      >Sign up</a
-                    >
+                    <span class="text-grey-darken-1">Don't have an account?</span>
+                    <a href="#" class="text-primary font-weight-bold ms-1">Sign up</a>
                   </div>
                 </v-form>
               </v-card-text>
@@ -163,10 +113,24 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "HomePage",
-};
+<script setup>
+import { ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
+
+const username = ref("");
+const user_password = ref("");
+const auth = useAuthStore();
+const error = ref(null);
+
+async function handleLogin() {
+  try {
+    await auth.login(username.value, user_password.value);
+    // Redirect after login
+    window.location.href = "/dashboard";
+  } catch (err) {
+    error.value = err.message || "Login failed";
+  }
+}
 </script>
 
 <style scoped>

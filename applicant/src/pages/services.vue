@@ -1,62 +1,15 @@
 <template>
   <div class="page-wrapper">
-    <v-app-bar flat color="#0000CC" dark height="88">
-      <v-container
-        fluid
-        class="d-flex align-center justify-space-between py-0 px-6"
-      >
-        <div class="d-flex align-center">
-          <v-img
-            src="https://www2.naga.gov.ph/wp-content/uploads/2022/05/Naga_City_Official_Seal-1.png"
-            alt="LGU Seal"
-            width="85"
-            height="75"
-            contain
-            class="me-3"
-          />
-          <div>
-            <div
-              style="
-                font-size: 12px;
-                font-weight: 400;
-                color: white;
-                line-height: 1.2;
-              "
-            >
-              REPUBLIC OF THE PHILIPPINES
-            </div>
-            <div
-              style="
-                font-size: 15px;
-                font-weight: 700;
-                color: white;
-                line-height: 1.2;
-              "
-            >
-              CITY GOVERNMENT OF NAGA
-            </div>
-          </div>
-        </div>
-        <div class="d-none d-md-flex nav-links">
-          <v-btn text class="mx-2" style="color: white" to="/home">Home</v-btn>
-          <v-btn text class="mx-2" style="color: white" to="/services"
-            >Services</v-btn
-          >
-          <v-btn text class="mx-2" style="color: white" to="/about"
-            >About</v-btn
-          >
-        </div>
-      </v-container>
-    </v-app-bar>
+    <ApplicantHeader />
 
     <v-main>
       <v-container class="main-content">
         <div class="header-section">
           <h1>ONE-STOP SHOP SERVICES</h1>
           <p>
-            Streamlined government services designed to make your transactions
-            faster, easier, and more convenient. Access multiple permits and
-            clearances in one location.
+            Streamlined government services designed to make your transactions faster,
+            easier, and more convenient. Access multiple permits and clearances in one
+            location.
           </p>
         </div>
 
@@ -69,15 +22,13 @@
                 </div>
                 <h3 class="card-title">Locational Clearance</h3>
                 <p class="card-description">
-                  Obtain official clearance for your business location. Required
-                  for establishing commercial operations and ensuring compliance
-                  with zoning regulations.
+                  Obtain official clearance for your business location. Required for
+                  establishing commercial operations and ensuring compliance with zoning
+                  regulations.
                 </p>
               </v-card-text>
               <v-card-actions class="pa-4">
-                <v-btn block color="#2962FF" dark large to="/lclogin"
-                  >Apply now</v-btn
-                >
+                <v-btn block color="#2962FF" dark large to="/lcportal">Apply now</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -90,15 +41,13 @@
                 </div>
                 <h3 class="card-title">Building Permit</h3>
                 <p class="card-description">
-                  Secure your construction permit for new buildings,
-                  renovations, or structural modifications. Ensures safety
-                  compliance and legal construction standards.
+                  Secure your construction permit for new buildings, renovations, or
+                  structural modifications. Ensures safety compliance and legal
+                  construction standards.
                 </p>
               </v-card-text>
               <v-card-actions class="pa-4">
-                <v-btn block color="#2962FF" dark large to="/bplogin"
-                  >Apply now</v-btn
-                >
+                <v-btn block color="#2962FF" dark large to="/bpportal">Apply now</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -111,15 +60,13 @@
                 </div>
                 <h3 class="card-title">Occupancy Permit</h3>
                 <p class="card-description">
-                  Get authorization to occupy your completed building. Certifies
-                  that your structure meets all safety requirements and building
-                  codes for occupancy.
+                  Get authorization to occupy your completed building. Certifies that your
+                  structure meets all safety requirements and building codes for
+                  occupancy.
                 </p>
               </v-card-text>
               <v-card-actions class="pa-4">
-                <v-btn block color="#2962FF" dark large to="/oplogin"
-                  >Apply now</v-btn
-                >
+                <v-btn block color="#2962FF" dark large to="/ocportal">Apply now</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -130,6 +77,8 @@
 </template>
 
 <script>
+import ApplicantHeader from "@/components/ApplicantHeader.vue";
+
 export default {
   name: "ServicesPage",
 };

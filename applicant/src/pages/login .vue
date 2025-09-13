@@ -1,40 +1,6 @@
 <template>
   <div class="page-wrapper">
-    <v-app-bar flat color="#0000CC" dark height="88">
-      <v-container
-        fluid
-        class="d-flex align-center justify-space-between py-0"
-        style="max-width: 1600px"
-      >
-        <div class="d-flex align-center">
-          <v-img
-            src="https://www2.naga.gov.ph/wp-content/uploads/2022/05/Naga_City_Official_Seal-1.png"
-            alt="LGU Seal"
-            width="85"
-            height="75"
-            contain
-            class="me-3"
-          />
-          <div>
-            <div
-              style="font-size: 12px; font-weight: 400; color: white; line-height: 1.2"
-            >
-              REPUBLIC OF THE PHILIPPINES
-            </div>
-            <div
-              style="font-size: 15px; font-weight: 700; color: white; line-height: 1.2"
-            >
-              CITY GOVERNMENT OF NAGA
-            </div>
-          </div>
-        </div>
-        <div class="d-none d-md-flex nav-links">
-          <v-btn text class="mx-2" style="color: white" to="/home">Home</v-btn>
-          <v-btn text class="mx-2" style="color: white" to="/services">Services</v-btn>
-          <v-btn text class="mx-2" style="color: white" to="/about">About</v-btn>
-        </div>
-      </v-container>
-    </v-app-bar>
+    <ApplicantHeader />
 
     <v-main>
       <v-container class="fill-height pa-8" fluid>

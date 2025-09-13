@@ -10,17 +10,7 @@
               Fast, Efficient, and Convenient Permit Processing in Naga City
             </p>
             <div class="d-flex mt-6">
-              <v-btn
-                outlined
-                large
-                color="grey-lighten-2"
-                class="mr-4"
-                @click="goToLogin"
-              >
-                <v-icon left>mdi-login</v-icon>
-                Sign In
-              </v-btn>
-              <v-btn color="#2962FF" dark large to="/services">
+              <v-btn color="#2962FF" dark large to="/login">
                 <v-icon left>mdi-file-edit-outline</v-icon>
                 Apply Now
               </v-btn>
@@ -51,8 +41,6 @@ export default {
 </script>
 
 <style scoped>
-/* ... (Existing styles remain the same for non-layout properties) ... */
-
 .page-wrapper {
   background-color: #f7f7f7;
   min-height: 100vh;

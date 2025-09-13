@@ -1,12 +1,45 @@
 <template>
   <div class="page-wrapper">
-    <ApplicantHeader />
+    <v-app-bar flat color="#0000CC" dark height="88">
+      <v-container
+        fluid
+        class="d-flex align-center justify-space-between py-0"
+        style="max-width: 1600px"
+      >
+        <div class="d-flex align-center">
+          <v-img
+            src="https://www2.naga.gov.ph/wp-content/uploads/2022/05/Naga_City_Official_Seal-1.png"
+            alt="LGU Seal"
+            width="85"
+            height="75"
+            contain
+            class="me-3"
+          />
+          <div>
+            <div
+              style="font-size: 12px; font-weight: 400; color: white; line-height: 1.2"
+            >
+              REPUBLIC OF THE PHILIPPINES
+            </div>
+            <div
+              style="font-size: 15px; font-weight: 700; color: white; line-height: 1.2"
+            >
+              CITY GOVERNMENT OF NAGA
+            </div>
+          </div>
+        </div>
+        <div class="d-none d-md-flex nav-links">
+          <v-btn text class="mx-2" style="color: white" to="/home">Home</v-btn>
+          <v-btn text class="mx-2" style="color: white" to="/services">Services</v-btn>
+          <v-btn text class="mx-2" style="color: white" to="/about">About</v-btn>
+        </div>
+      </v-container>
+    </v-app-bar>
 
     <v-main>
       <v-container class="fill-height pa-8" fluid>
         <v-row align="center" justify="center" class="w-100">
           <v-col cols="12" md="7" class="pa-6">
-            <!-- Info Section -->
             <div class="info-section">
               <h2 class="info-title">Why Choose Online Application</h2>
               <v-row class="mt-8">
@@ -45,7 +78,6 @@
             </div>
           </v-col>
 
-          <!-- Login Card -->
           <v-col cols="12" md="4" class="pa-6">
             <v-card class="login-card pa-5" color="white">
               <v-card-title
@@ -57,9 +89,8 @@
                 Login to your account
               </v-card-subtitle>
               <v-card-text>
-                <v-form @submit.prevent="handleLogin">
+                <v-form>
                   <v-text-field
-                    v-model="username"
                     label="Email Address"
                     density="compact"
                     variant="outlined"
@@ -67,7 +98,6 @@
                   ></v-text-field>
 
                   <v-text-field
-                    v-model="user_password"
                     label="Password"
                     density="compact"
                     variant="outlined"
@@ -86,18 +116,14 @@
                   </div>
 
                   <v-btn
-                    type="submit"
                     block
                     color="#4A00E0"
                     size="large"
                     class="login-btn"
+                    to="/permits"
                   >
                     Login
                   </v-btn>
-
-                  <div v-if="error" class="text-red text-center mt-2">
-                    {{ error }}
-                  </div>
 
                   <div class="text-center mt-6">
                     <span class="text-grey-darken-1">Don't have an account?</span>
@@ -113,24 +139,10 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
-
-const username = ref("");
-const user_password = ref("");
-const auth = useAuthStore();
-const error = ref(null);
-
-async function handleLogin() {
-  try {
-    await auth.login(username.value, user_password.value);
-    // Redirect after login
-    window.location.href = "/dashboard";
-  } catch (err) {
-    error.value = err.message || "Login failed";
-  }
-}
+<script>
+export default {
+  name: "HomePage",
+};
 </script>
 
 <style scoped>

@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="d-none d-md-flex nav-links">
-          <v-btn text class="mx-2" style="color: white" to="/home">Home</v-btn>
+          <v-btn text class="mx-2" style="color: white" to="/">Home</v-btn>
           <v-btn text class="mx-2" style="color: white" to="/services">Services</v-btn>
           <v-btn text class="mx-2" style="color: white" to="/about">About</v-btn>
         </div>

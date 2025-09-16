@@ -27,9 +27,9 @@ const router = createRouter({
       component: () => import("@/layout/AdminLayout.vue"),
       children: [
         {
-          path: "",
-          name: "home",
-          component: () => import("@/pages/home.vue"),
+          path: "AdminLogin",
+          name: "AdminLogin",
+          component: () => import("@/pages/AdminLogin.vue"),
         },
 
         // Building Permit Admin

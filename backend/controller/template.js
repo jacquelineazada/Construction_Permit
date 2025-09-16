@@ -1,11 +1,6 @@
 import db from "../db.js";
 import { v4 as uuidv4 } from "uuid";
 import { handleDbError } from "../utils/errorHandler.js";
-// ------------------------------------------------------------
-// Copy this template
-// rename the file
-// rename the function name, table_name, and fields
-// ------------------------------------------------------------
 
 // fetch all data
 export async function getAllData(request, response) {

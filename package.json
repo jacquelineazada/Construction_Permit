@@ -1,0 +1,16 @@
+{
+  "name": "construction-permit",
+  "private": true,
+  "workspaces": [
+    "applicant",
+    "backend"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm run dev -w applicant\" \"npm run dev -w-backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "metro-minify-terser": "^0.83.1",
+    "metro-runtime": "^0.83.1"
+  }
+}

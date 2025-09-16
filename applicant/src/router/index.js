@@ -7,37 +7,66 @@ const router = createRouter({
     // Route for Main Pages
     {
       path: "/",
-      name: "home",
-      component: () => import("@/pages/home.vue"),
+      component: () => import("@/layout/MainLayout.vue"),
+      children: [
+        // Main Pages for All Users
+        {
+          path: "",
+          name: "home",
+          component: () => import("@/pages/home.vue"),
+        },
+        {
+          path: "login",
+          name: "login",
+          component: () => import("@/pages/login .vue"),
+        },
+      ],
     },
     {
-      path: "/services",
-      name: "services",
-      component: () => import("@/pages/services.vue"),
+      path: "/admin",
+      component: () => import("@/layout/AdminLayout.vue"),
+      children: [
+        {
+          path: "",
+          name: "home",
+          component: () => import("@/pages/home.vue"),
+        },
+
+        // Building Permit Admin
+
+        // Locational Clearance Admin
+
+        // Compliance Monitoring Admin
+
+        // Occupancy Permit Admin
+      ],
     },
+
     {
-      path: "/login",
-      name: "login",
-      component: () => import("@/pages/login .vue"),
+      path: "/applicant",
+      component: () => import("@/layout/ApplicantLayout.vue"),
+      children: [
+        // Main Pages for Applicant
+        {
+          path: "permits",
+          name: "permits",
+          component: () => import("@/pages/permits.vue"),
+        },
+        {
+          path: "services",
+          name: "services",
+          component: () => import("@/pages/services.vue"),
+        },
+
+        // Building Permit Applicant
+
+        // Locational Clearance Applicant
+
+        // Occupancy Permit Applicant
+
+        //
+      ],
     },
-    {
-      path: "/about",
-      name: "about",
-      component: () => import("@/pages/about.vue"),
-    },
-    {
-      path: "/permits",
-      name: "permits",
-      component: () => import("@/pages/permits.vue"),
-    },
-
-    // Route for Building Permit
-
-    // Route for Location Clearance
-
-    // Route for Compliance
-
-    // Route for Occupancy Permit
   ],
 });
 export default router;

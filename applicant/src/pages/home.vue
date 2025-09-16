@@ -1,6 +1,5 @@
 <template>
   <div class="page-wrapper">
-    <ApplicantHeader />
     <v-main>
       <v-container fluid class="pa-0">
         <section class="hero-section d-flex align-center justify-center">
@@ -43,7 +42,6 @@ export default {
 <style scoped>
 .page-wrapper {
   background-color: #f7f7f7;
-  min-height: 100vh;
 }
 
 .nav-links .v-btn {

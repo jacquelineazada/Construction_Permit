@@ -1,6 +1,5 @@
 <template>
   <div class="page-wrapper">
-    <ApplicantHeader />
 
     <v-main>
       <v-container class="main-content">

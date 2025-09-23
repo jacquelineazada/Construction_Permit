@@ -17,21 +17,26 @@
           />
           <div>
             <div
-              style="font-size: 12px; font-weight: 400; color: white; line-height: 1.2"
+              style="
+                font-size: 12px;
+                font-weight: 400;
+                color: white;
+                line-height: 1.2;
+              "
             >
               REPUBLIC OF THE PHILIPPINES
             </div>
             <div
-              style="font-size: 15px; font-weight: 700; color: white; line-height: 1.2"
+              style="
+                font-size: 15px;
+                font-weight: 700;
+                color: white;
+                line-height: 1.2;
+              "
             >
               CITY GOVERNMENT OF NAGA
             </div>
           </div>
-        </div>
-        <div class="d-none d-md-flex nav-links">
-          <v-btn text class="mx-2" style="color: white" to="/">Home</v-btn>
-          <v-btn text class="mx-2" style="color: white" to="/services">Services</v-btn>
-          <v-btn text class="mx-2" style="color: white" to="/about">About</v-btn>
         </div>
       </v-container>
     </v-app-bar>

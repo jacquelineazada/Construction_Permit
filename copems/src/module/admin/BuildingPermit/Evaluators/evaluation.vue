@@ -1,383 +1,416 @@
 <template>
   <v-app>
-    <v-main class="bg-grey-lighten-4">
-      <div>
-        <v-card
-          class="d-flex flex-column fill-height"
-          style="
-            width: 100%;
-            max-width: 100%; /* Changed to 100% */
-            border-radius: 0;
-            box-shadow: none;
-            /* Removed border-left: 1px solid rgba(0, 0, 0, 0.12); */
-          "
-        >
-          <div
-            class="px-4 py-3 d-flex align-center justify-space-between"
-            style="height: 56px"
+    <v-app-bar flat color="#0000CC" dark height="88" app class="elevation-4">
+      <div class="d-flex align-center h-100 px-6"></div>
+    </v-app-bar>
+
+    <v-main class="bg-grey-lighten-3">
+      <v-card
+        flat
+        class="d-flex align-center justify-space-between px-6 py-3"
+        style="background-color: white; border-bottom: 1px solid lightgrey"
+      >
+        <div class="d-flex align-center">
+          <v-icon color="blue" class="mr-3" size="24"
+            >mdi-office-building</v-icon
           >
-            <div class="text-h6 font-weight-bold">
-              Building Permit Applicants
-            </div>
-            <div class="d-flex align-center">
-              <v-menu :close-on-content-click="false" location="bottom end">
-                <template v-slot:activator="{ props }">
-                  <v-badge
-                    color="red"
-                    :content="unreadNotificationsCount"
-                    overlap
-                    class="me-2"
-                    v-bind="props"
-                  >
-                    <v-icon size="20">mdi-bell</v-icon>
-                  </v-badge>
-                </template>
-                <v-card min-width="300" max-width="400">
-                  <v-card-title
-                    class="d-flex justify-space-between align-center"
-                  >
-                    <span class="text-h6">Applications to Evaluate</span>
-                    <v-btn icon @click="closeNotifications">
-                      <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                  </v-card-title>
-                  <v-divider></v-divider>
-                  <v-list dense>
-                    <v-list-item
-                      v-for="(application, index) in applicationsToEvaluate"
-                      :key="index"
-                      class="py-2"
+          <h2 class="mb-0 text-h6 font-weight-bold">
+            Building Permit Application
+          </h2>
+        </div>
+
+        <div class="d-flex align-center">
+          <v-menu :close-on-content-click="false" location="bottom end">
+            <template v-slot:activator="{ props }">
+              <v-badge
+                color="red"
+                :content="unreadNotificationsCount"
+                overlap
+                class="me-3 cursor-pointer"
+                v-bind="props"
+              >
+                <v-icon size="22">mdi-bell</v-icon>
+              </v-badge>
+            </template>
+            <v-card min-width="320" max-width="450" class="rounded-lg">
+              <v-card-title
+                class="d-flex justify-space-between align-center py-2"
+              >
+                <span class="text-subtitle-1 font-weight-bold"
+                  >Applications to Evaluate</span
+                >
+                <v-btn
+                  icon
+                  size="small"
+                  variant="text"
+                  @click="closeNotifications"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-list dense>
+                <v-list-item
+                  v-for="(application, index) in applicationsToEvaluate"
+                  :key="index"
+                  class="py-2"
+                >
+                  <template v-slot:prepend>
+                    <v-avatar
+                      size="40"
+                      :color="getAvatarColor(application.initials)"
+                      class="font-weight-bold white--text"
+                      >{{ application.initials }}</v-avatar
                     >
-                      <template v-slot:prepend>
-                        <v-avatar
-                          size="40"
-                          :color="getAvatarColor(application.initials)"
-                          class="font-weight-bold"
-                          >{{ application.initials }}</v-avatar
-                        >
-                      </template>
-                      <v-list-item-title class="font-weight-bold">
-                        {{ application.name }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle class="text-caption">
-                        {{ application.applicationId }}
-                      </v-list-item-subtitle>
-                      <v-list-item-subtitle class="text-caption mt-1">
-                        {{ application.message }}
-                      </v-list-item-subtitle>
-                      <v-list-item-subtitle class="text-caption mt-1">
-                        {{ application.time }}
-                      </v-list-item-subtitle>
-                      <template v-slot:append>
-                        <v-chip
-                          :color="getStatusColor(application.status)"
-                          size="small"
-                          label
-                          >{{ application.status }}</v-chip
-                        >
-                      </template>
-                    </v-list-item>
-                  </v-list>
-                  <v-divider></v-divider>
-                  <v-card-actions class="d-flex justify-center">
-                    <v-btn
-                      variant="text"
-                      color="blue"
-                      to="/building-permit"
-                      class="text-none"
-                    >
-                      View All Applications
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-menu>
-              <v-btn text to="/profile" class="profile-btn">
-                <v-avatar size="32" class="mx-2">
-                  <v-img
-                    alt="John"
-                    src="https://cdn.vuetifyjs.com/images/john.jpg"
-                  ></v-img>
-                </v-avatar>
-                <div class="d-flex flex-column text-left">
-                  <span
-                    class="text-caption font-weight-bold"
-                    style="color: #555; white-space: nowrap"
-                  >
-                    AlyssaC.Alvarez
-                  </span>
-                  <span
-                    class="text-caption font-weight-medium"
-                    style="color: #888; white-space: nowrap"
-                  >
-                    Administrative
-                  </span>
-                </div>
-              </v-btn>
-            </div>
-          </div>
-          <v-divider></v-divider>
-          <div class="d-flex flex-grow-1 pa-4 bg-grey-lighten-4">
-            <div class="d-flex flex-column" style="flex: 2; gap: 16px">
-              <v-card style="border-radius: 8px">
-                <div class="pa-4">
-                  <div class="d-flex align-center mb-2">
-                    <v-icon class="me-2">mdi-account-details-outline</v-icon>
-                    <div class="text-subtitle-1 font-weight-bold">
-                      Applicant Information
-                    </div>
-                  </div>
-                  <v-divider class="mb-3"></v-divider>
-                  <v-row dense>
-                    <v-col cols="12" sm="6">
-                      <div class="text-caption text-grey-darken-1">
-                        Applicant Name:
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.applicantName }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <div class="text-caption text-grey-darken-1">
-                        Project Name:
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.projectName }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12">
-                      <div class="text-caption text-grey-darken-1">
-                        Project Location:
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.projectLocation }}
-                      </div>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card>
-
-              <v-card style="border-radius: 8px">
-                <div class="pa-4">
-                  <div class="d-flex align-center mb-2">
-                    <v-icon class="me-2">mdi-home-city-outline</v-icon>
-                    <div class="text-subtitle-1 font-weight-bold">
-                      Property Details
-                    </div>
-                  </div>
-                  <v-divider class="mb-3"></v-divider>
-                  <v-row dense>
-                    <v-col cols="12" sm="6">
-                      <div class="text-caption text-grey-darken-1">
-                        Property Type:
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.propertyDetails.propertyType }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <div class="text-caption text-grey-darken-1">
-                        Building Use:
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.propertyDetails.buildingUse }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <div class="text-caption text-grey-darken-1">
-                        Floor Area:
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.propertyDetails.floorArea }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <div class="text-caption text-grey-darken-1">
-                        Number of Floors:
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.propertyDetails.numberOfFloors }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <div class="text-caption text-grey-darken-1">
-                        Property Address:
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.propertyDetails.propertyAddress }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <div class="text-caption text-grey-darken-1">
-                        Lot Area:
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.propertyDetails.lotArea }}
-                      </div>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card>
-
-              <v-card style="border-radius: 8px">
-                <div class="pa-4">
-                  <div class="d-flex align-center mb-2">
-                    <v-icon class="me-2">mdi-file-download-outline</v-icon>
-                    <div class="text-subtitle-1 font-weight-bold">
-                      Survey Plans
-                    </div>
-                  </div>
-                  <v-divider class="mb-3"></v-divider>
-                  <div class="d-flex flex-column" style="gap: 8px">
-                    <v-card
-                      v-for="(plan, index) in selectedApplicant.documents
-                        .surveyPlans"
-                      :key="index"
-                      class="py-2 px-3"
-                    >
-                      <div class="d-flex align-center justify-space-between">
-                        <div class="d-flex align-center">
-                          <v-icon color="red">mdi-file-pdf-box</v-icon>
-                          <div class="ms-3">
-                            <div class="font-weight-medium">
-                              {{ plan.name }}
-                            </div>
-                            <div class="text-caption text-grey-darken-1">
-                              {{ plan.description }} - {{ plan.size }} MB
-                            </div>
-                          </div>
-                        </div>
-                        <v-btn
-                          color="blue"
-                          variant="flat"
-                          size="small"
-                          @click="evaluateDocument(plan)"
-                          >Evaluate</v-btn
-                        >
-                      </div>
-                    </v-card>
-                  </div>
-                </div>
-              </v-card>
-            </div>
-
-            <div
-              class="d-flex flex-column"
-              style="flex: 1; margin-left: 16px; gap: 16px"
-            >
-              <v-card style="border-radius: 8px">
-                <div class="pa-4">
-                  <div class="d-flex align-center mb-2">
-                    <v-icon class="me-2">mdi-text-box-outline</v-icon>
-                    <div class="text-subtitle-1 font-weight-bold">
-                      Application Summary
-                    </div>
-                  </div>
-                  <v-divider class="mb-3"></v-divider>
-                  <v-row dense>
-                    <v-col cols="12">
-                      <div class="text-caption text-grey-darken-1">
-                        Application Number
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.applicationId }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12">
-                      <div class="text-caption text-grey-darken-1">Type</div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.type }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12">
-                      <div class="text-caption text-grey-darken-1">
-                        Processing Fee
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        {{ selectedApplicant.processingFee }}
-                      </div>
-                    </v-col>
-                    <v-col cols="12">
-                      <div class="text-caption text-grey-darken-1">
-                        Payment Status
-                      </div>
-                      <v-chip
-                        :color="selectedApplicant.paymentStatusColor"
-                        size="small"
-                        variant="flat"
-                        >{{ selectedApplicant.paymentStatus }}</v-chip
-                      >
-                    </v-col>
-                  </v-row>
-                  <div class="text-caption mt-4">
-                    <strong>Note:</strong> Payment will be processed after plan
-                    evaluation is complete. You will be notified once the
-                    evaluation is done.
-                  </div>
-                </div>
-              </v-card>
-
-              <v-card style="border-radius: 8px">
-                <div class="pa-4">
-                  <div class="d-flex align-center mb-2">
-                    <v-icon class="me-2">mdi-list-box-outline</v-icon>
-                    <div class="text-subtitle-1 font-weight-bold">
-                      Application Timeline
-                    </div>
-                  </div>
-                  <v-divider class="mb-3"></v-divider>
-                  <v-timeline side="end" align="start" density="compact">
-                    <v-timeline-item
-                      v-for="(event, index) in selectedApplicant.timeline"
-                      :key="index"
-                      :dot-color="event.color"
+                  </template>
+                  <v-list-item-title class="font-weight-bold text-subtitle-2">
+                    {{ application.name }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle class="text-caption">
+                    {{ application.applicationId }}
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle class="text-caption mt-1 text-wrap">
+                    {{ application.message }}
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle class="text-caption mt-1 text-grey">
+                    {{ application.time }}
+                  </v-list-item-subtitle>
+                  <template v-slot:append>
+                    <v-chip
+                      :color="getStatusColor(application.status)"
                       size="small"
-                      :fill-dot="event.filled"
-                      class="pb-0"
+                      label
+                      >{{ application.status }}</v-chip
                     >
-                      <div class="text-caption font-weight-bold">
-                        {{ event.title }}
-                      </div>
-                      <div class="text-caption">{{ event.date }}</div>
-                    </v-timeline-item>
-                  </v-timeline>
-                </div>
-              </v-card>
+                  </template>
+                </v-list-item>
+              </v-list>
+              <v-divider></v-divider>
+              <v-card-actions class="d-flex justify-center">
+                <v-btn
+                  variant="text"
+                  color="blue"
+                  to="/building-permit"
+                  class="text-none font-weight-bold"
+                  >View All Applications</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-menu>
+
+          <v-btn text to="/profile" class="profile-btn pa-2 rounded-lg">
+            <v-avatar size="36" class="mx-2">
+              <v-img
+                alt="Architect"
+                src="https://cdn.vuetifyjs.com/images/john.jpg"
+              ></v-img>
+            </v-avatar>
+            <div class="d-flex flex-column text-left">
+              <span
+                class="text-body-2 font-weight-bold"
+                style="color: #555; white-space: nowrap"
+              >
+                Alyssa C. Alvarez
+              </span>
+              <span
+                class="text-caption font-weight-medium"
+                style="color: #888; white-space: nowrap"
+              >
+                Architect
+              </span>
             </div>
-          </div>
-        </v-card>
+          </v-btn>
+        </div>
+      </v-card>
+
+      <div class="d-flex flex-grow-1 pa-6">
+        <div class="d-flex flex-column" style="flex: 2; gap: 20px">
+          <v-card elevation="2" class="rounded-lg" v-if="selectedApplicant.id">
+            <div class="pa-4">
+              <div class="d-flex align-center mb-3">
+                <v-icon class="me-3" color="blue"
+                  >mdi-account-details-outline</v-icon
+                >
+                <div class="text-h6 font-weight-bold">
+                  Applicant Information
+                </div>
+              </div>
+              <v-divider class="mb-4"></v-divider>
+              <v-row dense>
+                <v-col cols="12" sm="6">
+                  <div class="text-caption text-grey-darken-1">
+                    Applicant Name:
+                  </div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.applicantName }}
+                  </div>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <div class="text-caption text-grey-darken-1">
+                    Project Name:
+                  </div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.projectName }}
+                  </div>
+                </v-col>
+                <v-col cols="12">
+                  <div class="text-caption text-grey-darken-1">
+                    Project Location:
+                  </div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.projectLocation }}
+                  </div>
+                </v-col>
+              </v-row>
+            </div>
+          </v-card>
+
+          <v-card elevation="2" class="rounded-lg" v-if="selectedApplicant.id">
+            <div class="pa-4">
+              <div class="d-flex align-center mb-3">
+                <v-icon class="me-3" color="blue">mdi-home-city-outline</v-icon>
+                <div class="text-h6 font-weight-bold">Property Details</div>
+              </div>
+              <v-divider class="mb-4"></v-divider>
+              <v-row dense>
+                <v-col cols="12" sm="6">
+                  <div class="text-caption text-grey-darken-1">
+                    Property Type:
+                  </div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.propertyDetails.propertyType }}
+                  </div>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <div class="text-caption text-grey-darken-1">
+                    Building Use:
+                  </div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.propertyDetails.buildingUse }}
+                  </div>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <div class="text-caption text-grey-darken-1">Floor Area:</div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.propertyDetails.floorArea }}
+                  </div>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <div class="text-caption text-grey-darken-1">
+                    Number of Floors:
+                  </div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.propertyDetails.numberOfFloors }}
+                  </div>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <div class="text-caption text-grey-darken-1">Lot Area:</div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.propertyDetails.lotArea }}
+                  </div>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <div class="text-caption text-grey-darken-1">
+                    Property Address:
+                  </div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.propertyDetails.propertyAddress }}
+                  </div>
+                </v-col>
+              </v-row>
+            </div>
+          </v-card>
+
+          <v-card elevation="2" class="rounded-lg" v-if="selectedApplicant.id">
+            <div class="pa-4">
+              <div class="d-flex align-center mb-3">
+                <v-icon class="me-3" color="blue"
+                  >mdi-file-download-outline</v-icon
+                >
+                <div class="text-h6 font-weight-bold">Submitted Documents</div>
+              </div>
+              <v-divider class="mb-4"></v-divider>
+              <v-list class="pa-0">
+                <v-list-item
+                  v-for="(plan, index) in selectedApplicant.documents
+                    .surveyPlans"
+                  :key="index"
+                  class="rounded-lg mb-2 document-item"
+                  lines="two"
+                  color="blue"
+                >
+                  <template v-slot:prepend>
+                    <v-icon color="red-darken-1" size="24"
+                      >mdi-file-pdf-box</v-icon
+                    >
+                  </template>
+                  <v-list-item-title class="font-weight-medium text-body-1">
+                    {{ plan.name }}
+                    <v-chip
+                      size="x-small"
+                      label
+                      class="ml-2 text-uppercase font-weight-bold"
+                      color="blue-grey-lighten-4"
+                      >{{ plan.planType }}</v-chip
+                    >
+                  </v-list-item-title>
+                  <v-list-item-subtitle class="text-caption">
+                    {{ plan.description }} - {{ plan.size }} MB
+                  </v-list-item-subtitle>
+                  <template v-slot:append>
+                    <v-btn
+                      color="blue"
+                      variant="outlined"
+                      size="small"
+                      class="text-none"
+                      @click="evaluateDocument(plan)"
+                      >Evaluate</v-btn
+                    >
+                  </template>
+                </v-list-item>
+              </v-list>
+            </div>
+          </v-card>
+        </div>
+
+        <div
+          class="d-flex flex-column"
+          style="flex: 1; margin-left: 20px; gap: 20px"
+        >
+          <v-card elevation="2" class="rounded-lg" v-if="selectedApplicant.id">
+            <div class="pa-4">
+              <div class="d-flex align-center mb-3">
+                <v-icon class="me-3" color="blue">mdi-text-box-outline</v-icon>
+                <div class="text-h6 font-weight-bold">Application Summary</div>
+              </div>
+              <v-divider class="mb-4"></v-divider>
+              <v-row dense>
+                <v-col cols="12">
+                  <div class="text-caption text-grey-darken-1">
+                    Application Number
+                  </div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.applicationId }}
+                  </div>
+                </v-col>
+                <v-col cols="12">
+                  <div class="text-caption text-grey-darken-1">Type</div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.type }}
+                  </div>
+                </v-col>
+                <v-col cols="12">
+                  <div class="text-caption text-grey-darken-1">
+                    Processing Fee
+                  </div>
+                  <div class="text-subtitle-2 font-weight-medium text-black">
+                    {{ selectedApplicant.processingFee }}
+                  </div>
+                </v-col>
+                <v-col cols="12">
+                  <div class="text-caption text-grey-darken-1 mb-1">
+                    Payment Status
+                  </div>
+                  <v-chip
+                    :color="selectedApplicant.paymentStatusColor"
+                    size="small"
+                    variant="flat"
+                    label
+                    class="font-weight-bold"
+                    >{{ selectedApplicant.paymentStatus }}</v-chip
+                  >
+                </v-col>
+              </v-row>
+              <div class="text-caption mt-4 text-grey-darken-2">
+                <strong class="font-weight-bold">Note:</strong> Payment will be
+                processed after plan evaluation is complete.
+              </div>
+            </div>
+          </v-card>
+
+          <v-card elevation="2" class="rounded-lg" v-if="selectedApplicant.id">
+            <div class="pa-4">
+              <div class="d-flex align-center mb-3">
+                <v-icon class="me-3" color="blue">mdi-list-box-outline</v-icon>
+                <div class="text-h6 font-weight-bold">Application Timeline</div>
+              </div>
+              <v-divider class="mb-4"></v-divider>
+              <v-timeline side="end" align="start" density="compact">
+                <v-timeline-item
+                  v-for="(event, index) in selectedApplicant.timeline"
+                  :key="index"
+                  :dot-color="event.color"
+                  size="small"
+                  :fill-dot="event.filled"
+                  class="pb-0"
+                >
+                  <div class="text-body-2 font-weight-bold text-black">
+                    {{ event.title }}
+                  </div>
+                  <div class="text-caption text-grey-darken-1">
+                    {{ event.date }}
+                  </div>
+                </v-timeline-item>
+              </v-timeline>
+            </div>
+          </v-card>
+        </div>
       </div>
+
+      <v-card
+        v-if="!selectedApplicant.id"
+        class="ma-6 pa-6 text-center text-h6 text-grey-darken-1"
+      >
+        Select an application from the table to view its details and begin
+        evaluation.
+      </v-card>
     </v-main>
 
     <v-dialog v-model="isEvaluationModalVisible" max-width="1400">
-      <v-card class="pa-4 rounded-lg">
-        <v-card-title class="d-flex align-center justify-space-between pb-0">
-          <div class="text-h6 font-weight-bold">Standard Plan Evaluation</div>
-          <v-btn icon @click="isEvaluationModalVisible = false">
+      <v-card class="pa-6 rounded-xl">
+        <v-card-title class="d-flex align-center justify-space-between pb-2">
+          <div class="text-h5 font-weight-bold text-blue-darken-2">
+            Document Evaluation: {{ currentEvaluationPlan.name }}
+            <v-chip size="small" class="ml-2" color="blue">{{
+              currentEvaluationPlan.planType
+            }}</v-chip>
+          </div>
+          <v-btn
+            icon
+            size="small"
+            variant="text"
+            @click="isEvaluationModalVisible = false"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="pt-4">
           <v-row>
             <v-col cols="12" md="9">
-              <div class="text-subtitle-1 font-weight-bold mb-2">
-                {{ currentEvaluationPlan.name }}
+              <div
+                class="pa-2 rounded-lg border"
+                style="background-color: #f5f5f5"
+              >
+                <v-img
+                  :src="mockPlanImage"
+                  contain
+                  class="rounded-lg"
+                  style="max-height: 80vh"
+                ></v-img>
               </div>
-              <v-img
-                :src="mockPlanImage"
-                contain
-                class="rounded-lg border-sm"
-              ></v-img>
+              <div class="text-caption text-center pt-2 text-grey-darken-1">
+                Plan View - Zoom and annotation tools would be implemented here.
+              </div>
             </v-col>
+
             <v-col cols="12" md="3">
               <v-form @submit.prevent="submitEvaluation">
                 <div class="mb-4">
                   <div class="text-subtitle-1 font-weight-bold mb-2">
-                    Architectural Requirements
+                    {{ currentEvaluationPlan.planType }} Requirements Checklist
                   </div>
-                  <div
-                    v-for="(req, index) in architecturalRequirements"
-                    :key="index"
-                  >
+                  <v-divider class="mb-3"></v-divider>
+                  <div v-for="(req, index) in currentChecklist" :key="index">
                     <div class="d-flex align-center">
                       <v-checkbox
                         v-model="evaluationData.requirements"
@@ -386,15 +419,23 @@
                         density="compact"
                         hide-details
                         class="flex-grow-1"
+                        color="blue"
                       ></v-checkbox>
-                      <v-icon
-                        v-if="!evaluationData.requirements.includes(req.value)"
-                        size="20"
-                        class="ms-2"
-                        color="red"
+                      <v-btn
+                        icon
+                        size="x-small"
+                        variant="text"
+                        :color="
+                          evaluationData.commentsByRequirement[req.value] !==
+                          undefined
+                            ? 'red'
+                            : 'grey-lighten-1'
+                        "
                         @click="showCommentField(req.value)"
-                        >mdi-close-circle</v-icon
+                        class="ms-2"
                       >
+                        <v-icon size="18">mdi-comment-alert</v-icon>
+                      </v-btn>
                     </div>
                     <v-textarea
                       v-if="
@@ -402,60 +443,84 @@
                         undefined
                       "
                       v-model="evaluationData.commentsByRequirement[req.value]"
-                      placeholder="Add comment..."
+                      placeholder="Add non-compliance comment..."
                       variant="outlined"
-                      rows="1"
+                      rows="2"
                       class="mt-1 mb-2"
                       hide-details
+                      density="compact"
                     ></v-textarea>
                   </div>
                 </div>
+
                 <div class="mb-4">
                   <div class="text-subtitle-1 font-weight-bold mb-2">
-                    Comments/Feedback
+                    General Comments/Feedback
                   </div>
                   <v-textarea
                     v-model="evaluationData.comments"
-                    placeholder="Add your general comments here..."
+                    placeholder="General summary or additional feedback..."
                     variant="outlined"
                     rows="3"
                     hide-details
                   ></v-textarea>
                 </div>
+
                 <div class="mb-4">
                   <div class="text-subtitle-1 font-weight-bold mb-2">
-                    Assessment Fee
+                    Assessment Status
                   </div>
-                  <v-radio-group v-model="evaluationData.status" hide-details>
-                    <v-radio label="Approved" value="approved"></v-radio>
-                    <v-radio label="For Revision" value="forRevision"></v-radio>
+                  <v-radio-group
+                    v-model="evaluationData.status"
+                    hide-details
+                    color="blue"
+                    class="mt-1"
+                  >
+                    <v-radio label="Approved" value="Verified"></v-radio>
+                    <v-radio label="For Revision" value="Return"></v-radio>
                   </v-radio-group>
                 </div>
-                <div class="d-flex flex-column" style="gap: 4px">
-                  <div class="d-flex justify-space-between">
-                    <div class="text-caption text-grey-darken-1">
-                      Architectural Plan Review
+
+                <v-card
+                  variant="flat"
+                  color="white"
+                  class="pa-3 mb-4 elevation-1"
+                >
+                  <div class="text-subtitle-1 font-weight-bold mb-2">
+                    Fee Summary
+                  </div>
+                  <div class="d-flex flex-column" style="gap: 4px">
+                    <div class="d-flex justify-space-between">
+                      <div class="text-caption text-grey-darken-2">
+                        Architectural Plan Review
+                      </div>
+                      <div class="text-caption font-weight-medium">₱500.00</div>
                     </div>
-                    <div class="text-caption font-weight-medium">₱500.00</div>
-                  </div>
-                  <div class="d-flex justify-space-between">
-                    <div class="text-caption text-grey-darken-1">
-                      Processing Fee
+                    <div class="d-flex justify-space-between">
+                      <div class="text-caption text-grey-darken-2">
+                        Processing Fee
+                      </div>
+                      <div class="text-caption font-weight-medium">
+                        ₱2,500.00
+                      </div>
                     </div>
-                    <div class="text-caption font-weight-medium">₱2,500.00</div>
+                    <v-divider class="my-1"></v-divider>
+                    <div
+                      class="d-flex justify-space-between font-weight-bold text-blue-darken-2"
+                    >
+                      <div class="text-body-2">Total Amount Due</div>
+                      <div class="text-body-2">₱3,000.00</div>
+                    </div>
                   </div>
-                  <v-divider class="my-1"></v-divider>
-                  <div class="d-flex justify-space-between font-weight-bold">
-                    <div class="text-subtitle-2">Total Amount</div>
-                    <div class="text-subtitle-2">₱3,000.00</div>
-                  </div>
-                </div>
+                </v-card>
+
                 <v-btn
                   type="submit"
                   color="blue"
-                  variant="flat"
+                  variant="elevated"
                   block
-                  class="mt-4"
+                  size="large"
+                  class="mt-4 text-none font-weight-bold"
                   >Submit Evaluation</v-btn
                 >
               </v-form>
@@ -470,22 +535,61 @@
 <script setup>
 import { ref, computed } from "vue";
 
-// Hardcoded data to simulate a backend API response. In a real application, this data would be fetched.
+// --- STATE MANAGEMENT ---
+const search = ref("");
+const activeFilter = ref("All");
+const loading = ref(false);
+
+// Modal State
+const isEvaluationModalVisible = ref(false);
+const currentEvaluationPlan = ref({});
+const evaluationData = ref({
+  requirements: [],
+  comments: "",
+  commentsByRequirement: {},
+  status: "",
+});
+
+// Mock data for the evaluation form
+const mockPlanImage = ref(
+  "https://placehold.co/1000x800/e0e0e0/000000?text=Architectural+Plan+Placeholder"
+);
+
+// --- DYNAMIC CHECKLISTS DEFINITION (Only Architectural is needed, but retaining structure) ---
+const planChecklists = {
+  Architectural: [
+    { label: "Complete Plan Set (1:100 scale)", value: "complete_plan_set" },
+    { label: "Site Plan showing setbacks and site lines", value: "site_plan" },
+    { label: "Floor Plans showing all Rooms", value: "floor_plans" },
+    { label: "All Elevations", value: "all_elevations" },
+    { label: "Section Showing all Floors", value: "all_sections" },
+    { label: "Details (Stair Section/Ramp etc)", value: "details" },
+  ],
+};
+
+// Computed property to dynamically fetch the correct checklist for the modal
+const currentChecklist = computed(() => {
+  const planType = currentEvaluationPlan.value.planType;
+  return planChecklists[planType] || [];
+});
+
+// --- MOCK DATA (All applications focused on Architectural Plans) ---
+
 const applicationsToEvaluate = ref([
   {
     name: "Jin Degusman",
     initials: "JD",
     applicationId: "BP-2024-000123-T",
-    message: "Building permit application requires architectural evaluation",
+    message: "Architectural plan ready for review",
     time: "2 days ago",
-    status: "Verified",
+    status: "Pending",
     read: false,
   },
   {
     name: "David Tolo...",
     initials: "DT",
     applicationId: "BP-2024-000567-T",
-    message: "Building permit application requires architectural evaluation",
+    message: "Architectural plan ready for review",
     time: "3 days ago",
     status: "Verified",
     read: false,
@@ -494,15 +598,14 @@ const applicationsToEvaluate = ref([
     name: "Jennifer Nayda",
     initials: "JN",
     applicationId: "BP-2024-000910-T",
-    message: "Building permit application requires architectural evaluation",
+    message: "Missing elevation plans, returned for revision",
     time: "4 days ago",
-    status: "Verified",
+    status: "Return",
     read: false,
   },
 ]);
 
-// More comprehensive mock data for the main content area
-const applicants = ref([
+const applicantsDetailed = ref([
   {
     id: 1,
     applicantName: "Jim Deguzman",
@@ -522,15 +625,16 @@ const applicants = ref([
     documents: {
       surveyPlans: [
         {
-          name: "Architectural Plan",
-          description: "Required Document",
+          name: "Architectural Plan ",
+          description: "Floor plan and elevations",
           size: 2.5,
+          planType: "Architectural",
         },
       ],
     },
     type: "Building Permit",
     processingFee: "₱2,500.00",
-    paymentStatus: "Pending Evaluation",
+    paymentStatus: "Pending Plan Evaluation",
     paymentStatusColor: "#FBF46D",
     timeline: [
       {
@@ -540,7 +644,7 @@ const applicants = ref([
         filled: true,
       },
       {
-        title: "Under Plan Evaluation",
+        title: "Under Architectural Review",
         date: "Jan 17, 2024 - 9:00 AM",
         color: "#FBF46D",
         filled: true,
@@ -551,18 +655,12 @@ const applicants = ref([
         color: "grey",
         filled: false,
       },
-      {
-        title: "Final Approval",
-        date: "Pending",
-        color: "grey",
-        filled: false,
-      },
     ],
   },
   {
     id: 2,
-    applicantName: "Maria Santos",
-    initials: "MS",
+    applicantName: "David Tolo",
+    initials: "DT",
     status: "Verified",
     applicationId: "BP-2024-000567-T",
     projectName: "Residential House",
@@ -578,20 +676,16 @@ const applicants = ref([
     documents: {
       surveyPlans: [
         {
-          name: "Architectural Plan",
-          description: "Required Document",
+          name: "Architectural Plan - Full Set",
+          description: "Complete drawings",
           size: 2.1,
-        },
-        {
-          name: "Electrical Plan",
-          description: "Required Document",
-          size: 1.5,
+          planType: "Architectural",
         },
       ],
     },
     type: "Building Permit",
     processingFee: "₱1,800.00",
-    paymentStatus: "Payment Complete",
+    paymentStatus: "Approved - Fee Due",
     paymentStatusColor: "green",
     timeline: [
       {
@@ -601,13 +695,7 @@ const applicants = ref([
         filled: true,
       },
       {
-        title: "Document Verified",
-        date: "Jan 10, 2024 - 11:30 AM",
-        color: "#B4FE98",
-        filled: true,
-      },
-      {
-        title: "Under Plan Evaluation",
+        title: "Architectural Review Completed",
         date: "Jan 11, 2024 - 2:00 PM",
         color: "#B4FE98",
         filled: true,
@@ -615,21 +703,15 @@ const applicants = ref([
       {
         title: "Payment Processing",
         date: "Jan 12, 2024 - 10:00 AM",
-        color: "#B4FE98",
-        filled: true,
-      },
-      {
-        title: "Final Approval",
-        date: "Jan 15, 2024 - 3:00 PM",
-        color: "#B4FE98",
+        color: "#FBF46D",
         filled: true,
       },
     ],
   },
   {
     id: 3,
-    applicantName: "Juan Dela Cruz",
-    initials: "JD",
+    applicantName: "Jennifer Nayda",
+    initials: "JN",
     status: "Return",
     applicationId: "BP-2024-000910-T",
     projectName: "Office Renovation",
@@ -645,15 +727,16 @@ const applicants = ref([
     documents: {
       surveyPlans: [
         {
-          name: "Architectural Plan",
-          description: "Required Document",
+          name: "Architectural Layout",
+          description: "Floor plan only, missing elevations",
           size: 5.0,
+          planType: "Architectural",
         },
       ],
     },
     type: "Building Permit",
     processingFee: "₱5,000.00",
-    paymentStatus: "Pending Evaluation",
+    paymentStatus: "Revision Required",
     paymentStatusColor: "red",
     timeline: [
       {
@@ -663,19 +746,7 @@ const applicants = ref([
         filled: true,
       },
       {
-        title: "Document Verified",
-        date: "Jan 20, 2024 - 4:00 PM",
-        color: "#B4FE98",
-        filled: true,
-      },
-      {
-        title: "Under Plan Evaluation",
-        date: "Jan 21, 2024 - 11:00 AM",
-        color: "#FBF46D",
-        filled: true,
-      },
-      {
-        title: "Returned for Corrections",
+        title: "Returned for Architectural Corrections",
         date: "Jan 22, 2024 - 9:00 AM",
         color: "red",
         filled: true,
@@ -686,56 +757,32 @@ const applicants = ref([
         color: "grey",
         filled: false,
       },
-      {
-        title: "Final Approval",
-        date: "Pending",
-        color: "grey",
-        filled: false,
-      },
     ],
   },
 ]);
 
-// State for the selected applicant, initialized to the first one in the list
-const selectedApplicant = ref(applicants.value[0]);
+// CRITICAL FIX: Initialize selectedApplicant to the first detailed record
+const selectedApplicant = ref(applicantsDetailed.value[0]);
 
-// New state for the evaluation modal
-const isEvaluationModalVisible = ref(false);
-const currentEvaluationPlan = ref({});
-const evaluationData = ref({
-  requirements: [],
-  comments: "", // Main comment field, kept for general feedback
-  commentsByRequirement: {}, // New object to hold comments for each requirement
-  status: "approved",
-});
-
-// Mock data for the evaluation form
-const mockPlanImage = ref(
-  "https://placehold.co/1000x800/e0e0e0/000000?text=Architectural+Plan+Placeholder"
-);
-const architecturalRequirements = ref([
-  { label: "Complete Plan Set (1:100 scale)", value: "complete_plan_set" },
-  { label: "Site Plan showing setbacks and site lines", value: "site_plan" },
-  { label: "Floor Plans showing all Rooms", value: "floor_plans" },
-  { label: "All Elevations", value: "all_elevations" },
-  { label: "Sections showing all Floors", value: "all_sections" },
-  { label: "Details (Stair sections/Ramp etc.)", value: "details" },
-]);
+// --- COMPUTED PROPERTIES ---
 
 const unreadNotificationsCount = computed(() => {
   return applicationsToEvaluate.value.filter((n) => !n.read).length;
 });
 
+// --- METHODS ---
+
+function onClick() {
+  loading.value = true;
+  setTimeout(() => {
+    loading.value = false;
+  }, 2000);
+}
+
 const closeNotifications = () => {
   applicationsToEvaluate.value.forEach((notification) => {
     notification.read = true;
   });
-};
-
-const logout = () => {
-  // In a real app, this function would handle user authentication and session management.
-  // For example, it would call an API endpoint to invalidate the user's token.
-  console.log("User logged out.");
 };
 
 const getStatusColor = (status) => {
@@ -755,69 +802,130 @@ const getAvatarColor = (initials) => {
   return colors[initials] || "grey";
 };
 
-// Function to handle viewing an applicant's details
+// Function to handle viewing an applicant's details and opening the modal
 const viewDetails = (applicant) => {
-  selectedApplicant.value = applicant;
+  // Find the detailed applicant object based on the applicationId
+  const detailedData = applicantsDetailed.value.find(
+    (a) => a.applicationId === applicant.applicationId
+  );
+
+  if (detailedData) {
+    selectedApplicant.value = detailedData;
+
+    // Auto-select the first Architectural plan for evaluation
+    const firstPlan = detailedData.documents.surveyPlans.find(
+      (p) => p.planType === "Architectural"
+    );
+
+    if (firstPlan) {
+      evaluateDocument(firstPlan);
+    } else if (detailedData.documents.surveyPlans.length > 0) {
+      // Fallback to evaluating the very first document if Architectural isn't explicitly found
+      evaluateDocument(detailedData.documents.surveyPlans[0]);
+    } else {
+      console.warn("No Architectural plans submitted for this application.");
+    }
+  } else {
+    selectedApplicant.value = {};
+    console.error("Detailed applicant data not found.");
+  }
 };
 
-// Functions to simulate document actions
+// Functions to simulate document actions (FIXED)
 const evaluateDocument = (plan) => {
   currentEvaluationPlan.value = plan;
   isEvaluationModalVisible.value = true;
-  // Initialize the commentsByRequirement object for the new evaluation
-  evaluationData.value.commentsByRequirement = {};
-  console.log(`Evaluating document: ${plan.name}`);
+  // Reset evaluation form state to unselected/empty
+  evaluationData.value = {
+    requirements: [],
+    comments: "",
+    commentsByRequirement: {},
+    status: "",
+  };
 };
 
 const showCommentField = (requirementValue) => {
-  // Toggle the comment field visibility and initialize the comment if it doesn't exist
-  if (
-    evaluationData.value.commentsByRequirement[requirementValue] === undefined
-  ) {
+  const isCommentFieldVisible =
+    evaluationData.value.commentsByRequirement[requirementValue] !== undefined;
+
+  if (isCommentFieldVisible) {
+    delete evaluationData.value.commentsByRequirement[requirementValue];
+    if (!evaluationData.value.requirements.includes(requirementValue)) {
+      evaluationData.value.requirements.push(requirementValue);
+    }
+  } else {
     evaluationData.value.commentsByRequirement[requirementValue] = "";
-    // Uncheck the box if they click the disapprove icon
     const index = evaluationData.value.requirements.indexOf(requirementValue);
     if (index > -1) {
       evaluationData.value.requirements.splice(index, 1);
     }
-  } else {
-    delete evaluationData.value.commentsByRequirement[requirementValue];
   }
 };
 
-const viewDocument = (docName) => {
-  console.log(`Viewing document: ${docName}`);
-  // This would typically open the document in a new tab or modal.
-};
-
-// Function to handle the form submission
+// Function to handle the form submission (Simplified status update)
 const submitEvaluation = () => {
-  console.log("Evaluation Submitted:", evaluationData.value);
-  // Here you would send the data to a backend API
+  // Find the applicant in the detailed data and update status
+  const applicant = applicantsDetailed.value.find(
+    (a) => a.applicationId === selectedApplicant.value.applicationId
+  );
+
+  if (applicant && evaluationData.value.status) {
+    applicant.status =
+      evaluationData.value.status === "Verified" ? "Verified" : "Return";
+    applicant.paymentStatus =
+      evaluationData.value.status === "Verified"
+        ? "Pending Payment"
+        : "Revision Required";
+    applicant.paymentStatusColor =
+      evaluationData.value.status === "Verified" ? "orange" : "red";
+
+    // Add a timeline entry for the review
+    applicant.timeline.push({
+      title: `${currentEvaluationPlan.value.planType} Review - ${
+        evaluationData.value.status === "Verified" ? "Approved" : "Returned"
+      }`,
+      date: new Date().toLocaleString(),
+      color: evaluationData.value.status === "Verified" ? "green" : "red",
+      filled: true,
+    });
+  }
+
   isEvaluationModalVisible.value = false;
   // Reset the form data
   evaluationData.value = {
     requirements: [],
     comments: "",
     commentsByRequirement: {},
-    status: "approved",
+    status: "",
   };
 };
 </script>
 
 <style scoped>
-.nav-links .v-btn {
-  text-transform: none !important;
-  font-weight: 500;
-  font-size: 17px;
-}
+/* Scoped styles for aesthetic enhancements */
+
+/* Profile Button Hover Effect */
 .profile-btn {
   background-color: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
   min-width: unset !important;
+  transition: background-color 0.2s ease;
+  border: 1px solid transparent;
 }
-.v-list-item--active {
-  background-color: rgba(0, 0, 0, 0.04);
+
+.profile-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid lightgrey;
+}
+
+/* Document Card Hover Effect */
+.document-item {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.document-item:hover {
+  background-color: #f0f0f0; /* Light hover background */
 }
 </style>

@@ -37,7 +37,32 @@ const router = createRouter({
         // Locational Clearance Admin
 
         // Compliance Monitoring Admin
+        {
+          path: "ComplianceMonitoring",
+          name: "ComplianceMonitoring",
+          component: () =>
+            import(
+              "@/Admin/Modules/ComplianceMonitoring/Compliance/compliance.vue"
+            ), // Or any other component for the root
+        },
 
+        {
+          path: "rqmonitoring",
+          name: "rqmonitoring",
+          component: () =>
+            import(
+              "@/Admin/Modules/ComplianceMonitoring/RQMonitoring/rqmonitoring.vue"
+            ), // Or any other component for the root
+        },
+
+        {
+          path: "opmonitoring",
+          name: "opmonitoring",
+          component: () =>
+            import(
+              "@/Admin/Modules/ComplianceMonitoring/OPMonitoring/opmonitoring.vue"
+            ), // Or any other component for the root
+        },
         // Occupancy Permit Admin
       ],
     },

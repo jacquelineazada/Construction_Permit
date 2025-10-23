@@ -53,8 +53,8 @@
           <v-divider></v-divider>
 
           <v-card-text class="flex-grow-1 pa-4">
-            <v-row class="mb-4 align-center">
-              <v-col cols="12" sm="8" md="6">
+            <v-row class="mb-4">
+              <v-col cols="12" class="d-flex justify-start align-center">
                 <v-text-field
                   v-model="searchQuery"
                   label="Search documents/clearances..."
@@ -64,10 +64,14 @@
                   hide-details
                   single-line
                   @click:append-inner="onClick"
+                  style="max-width: 300px; margin-right: 8px"
                 ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="4" md="6" class="d-flex justify-end">
-                <v-menu :close-on-content-click="false" location="bottom right">
+
+                <v-menu
+                  :close-on-content-click="false"
+                  location="bottom left"
+                  offset-y
+                >
                   <template v-slot:activator="{ props }">
                     <v-btn
                       color="#007bff"
@@ -133,9 +137,10 @@
                       :color="item.status === 'Approved' ? 'grey' : 'primary'"
                       :class="{ 'white--text': item.status !== 'Approved' }"
                       :disabled="item.status === 'Approved'"
-                      @click="showNotificationDialog(item)"
+                      prepend-icon="mdi-email"
+                      @click="showEmailDialog(item)"
                     >
-                      Notify
+                      Email
                     </v-btn>
                   </template>
                 </v-data-table>
@@ -145,22 +150,88 @@
         </v-card>
       </div>
 
-      <v-dialog v-model="notificationDialog" max-width="400">
-        <v-card class="rounded-lg">
-          <v-card-title class="headline primary white--text">
+      <v-dialog v-model="emailDialog" max-width="600">
+        <v-card class="rounded-lg elevation-8">
+          <v-card-title class="pa-5 primary white--text d-flex align-center">
+            <v-icon dark size="24" class="me-3">mdi-email</v-icon>
+            <span class="text-h6 font-weight-bold">Compose Email</span>
+          </v-card-title>
+          <v-card-text class="pa-6">
+            <v-text-field
+              label="To"
+              :value="`Evaluator for ${
+                selectedItem.documentType || selectedItem.clearanceType
+              }`"
+              readonly
+              append-icon="mdi-account-tie"
+              density="compact"
+              variant="solo"
+              hide-details
+              class="mb-4"
+              style="font-weight: 500"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="emailSubject"
+              label="Subject"
+              density="compact"
+              variant="solo"
+              hide-details
+              class="mb-4"
+            ></v-text-field>
+
+            <v-textarea
+              v-model="emailBody"
+              label="Email Body"
+              rows="10"
+              variant="solo"
+              hide-details
+            ></v-textarea>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions class="pa-4">
+            <v-spacer></v-spacer>
+            <v-btn color="grey darken-1" text @click="emailDialog = false">
+              Cancel
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="sendEmail"
+              :disabled="!emailSubject || !emailBody"
+              class="font-weight-bold"
+            >
+              <v-icon left>mdi-send</v-icon>
+              Send Email
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="emailSendSuccessDialog" max-width="400">
+        <v-card class="rounded-lg elevation-8">
+          <v-card-title class="headline primary white--text pa-4">
             <v-icon left dark>mdi-check-circle-outline</v-icon>
-            Notification Sent
+            Success
           </v-card-title>
           <v-card-text class="py-6 text-center">
-            <div class="text-h6 mb-2">Successfully notified evaluatior</div>
-            <p class="text-subtitle-1">
-              Re: {{ selectedItem.documentType || selectedItem.clearanceType }}
+            <div class="text-h5 mb-2 green--text text--darken-2">
+              Email Sent Successfully!
+            </div>
+            <p class="text-subtitle-1 grey--text text--darken-1">
+              Your email has been sent to the evaluator for:
+            </p>
+            <p class="text-h6 font-weight-bold mb-0">
+              {{ selectedItem.documentType || selectedItem.clearanceType }}
             </p>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions class="pa-4">
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="notificationDialog = false">
-              OK
+            <v-btn
+              color="primary"
+              @click="emailSendSuccessDialog = false"
+              class="font-weight-bold"
+            >
+              Close
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -216,7 +287,11 @@ export default {
       activeTab: 0, // 0: Document Requirement, 1: To Follow
       searchQuery: "",
       selectedFilter: "All",
-      notificationDialog: false,
+      // UPDATED Data Properties for Email
+      emailDialog: false, // Replaces notificationDialog
+      emailSendSuccessDialog: false, // New success dialog
+      emailSubject: "",
+      emailBody: "",
       statusHistoryDialog: false,
       selectedItem: {},
       notifications: [
@@ -269,7 +344,7 @@ export default {
           { title: "Date Submitted", key: "dateSubmitted" },
           { title: "Deadline Due", key: "deadlineDue" },
           { title: "Status", key: "status" },
-          { title: "Notify", key: "notify", sortable: false },
+          { title: "Email", key: "notify", sortable: false }, // Changed header to Email
         ],
         toFollow: [
           { title: "#", key: "id" },
@@ -277,7 +352,7 @@ export default {
           { title: "Date Submitted", key: "dateSubmitted" },
           { title: "Deadline Due", key: "deadlineDue" },
           { title: "Status", key: "status" },
-          { title: "Notify", key: "notify", sortable: false },
+          { title: "Email", key: "notify", sortable: false }, // Changed header to Email
         ],
       },
       items: {
@@ -482,9 +557,30 @@ export default {
       const options = { year: "numeric", month: "long", day: "numeric" };
       return new Date(dateString).toLocaleDateString(undefined, options);
     },
-    showNotificationDialog(item) {
+    showEmailDialog(item) {
       this.selectedItem = item;
-      this.notificationDialog = true;
+      // Clear previous inputs
+      this.emailSubject = "";
+      this.emailBody = "";
+      // Pre-fill subject based on the item type and status for convenience
+      const type = item.documentType || item.clearanceType;
+      this.emailSubject = `Inquiry regarding ${type} - Status: ${item.status}`;
+      this.emailBody = `Dear Evaluator,\n\nI am writing to follow up on the status of the "${type}" document/clearance, which is currently listed as "${item.status}".\n\n[Insert your specific question or request here.]\n\nThank you.\n\nSincerely,`;
+      this.emailDialog = true;
+    },
+    sendEmail() {
+      // Logic to send email (in a real app, this would be an API call)
+      console.log("Email Sent:");
+      console.log(
+        "To: Evaluator for",
+        this.selectedItem.documentType || this.selectedItem.clearanceType
+      );
+      console.log("Subject:", this.emailSubject);
+      console.log("Body:", this.emailBody);
+
+      // Simulate successful sending and close dialogs
+      this.emailDialog = false;
+      this.emailSendSuccessDialog = true;
     },
     showStatusHistory(item) {
       this.selectedItem = item;

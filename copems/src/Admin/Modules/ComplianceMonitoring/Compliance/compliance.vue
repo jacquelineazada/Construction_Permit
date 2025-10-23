@@ -121,13 +121,14 @@
           <v-card-text class="flex-grow-1 pa-4">
             <v-row class="mb-6">
               <v-col
-                v-for="card in statusCards"
-                :key="card.title"
+                v-for="(card, index) in dynamicStatusCards"
+                :key="index"
                 cols="12"
                 sm="6"
                 md="3"
               >
                 <v-card
+                  v-if="card.title"
                   color="white"
                   elevation="2"
                   @click="filterByStatus(card.status)"
@@ -157,8 +158,8 @@
               </v-col>
             </v-row>
 
-            <v-row class="mb-4 align-center">
-              <v-col cols="12" sm="8" md="6">
+            <v-row class="mb-4 align-center justify-end">
+              <v-col cols="12" sm="10" md="6" class="d-flex justify-end">
                 <v-text-field
                   v-model="search"
                   label="Search applicants..."
@@ -169,9 +170,9 @@
                   single-line
                   :loading="loading"
                   @click:append-inner="onClick"
+                  style="max-width: 300px; margin-right: 8px"
                 ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="4" md="6" class="d-flex justify-end">
+
                 <v-menu :close-on-content-click="false" location="bottom right">
                   <template v-slot:activator="{ props }">
                     <v-btn
@@ -179,15 +180,16 @@
                       class="text-white"
                       prepend-icon="mdi-filter-variant"
                       v-bind="props"
+                      style="height: 48px"
                     >
                       Filter
                     </v-btn>
                   </template>
                   <v-list>
                     <v-list-item
-                      v-for="item in filterOptions"
+                      v-for="item in dynamicFilterOptions"
                       :key="item.title"
-                      @click="filterByStatus(item.status)"
+                      @click="filterByStatus(item.value)"
                     >
                       <v-list-item-title>{{ item.title }}</v-list-item-title>
                     </v-list-item>
@@ -195,9 +197,14 @@
                 </v-menu>
               </v-col>
             </v-row>
+
             <v-tabs v-model="activeTab" class="mb-4">
-              <v-tab value="applied">Applied Applicants</v-tab>
-              <v-tab value="approved">Approved Building Permit Statuses</v-tab>
+              <v-tab value="applied" @click="resetFilter('applied')">
+                Applied Applicants
+              </v-tab>
+              <v-tab value="approved" @click="resetFilter('approved')">
+                Approved Building Permit Statuses
+              </v-tab>
             </v-tabs>
 
             <v-window v-model="activeTab">
@@ -268,13 +275,14 @@
                       <div class="d-flex flex-wrap align-center">
                         <v-btn
                           v-if="!item.nocSubmitted"
-                          color="#007bff"
-                          class="text-white my-1 mx-1"
+                          color="white"
+                          class="my-1 mx-1 border border-light-grey"
                           size="small"
-                          @click="showNotifyDialog(item)"
+                          @click="showEmailDialog(item)"
                         >
-                          Notify NOC
+                          <span class="text-blue-grey-darken-4">Email</span>
                         </v-btn>
+
                         <v-btn
                           color="#007bff"
                           class="text-white my-1 mx-1"
@@ -287,15 +295,25 @@
                               : "Set Inspection"
                           }}
                         </v-btn>
-                        <v-btn
-                          v-if="item.inspectionSet"
-                          color="#007bff"
-                          class="text-white my-1 mx-1"
-                          size="small"
-                          @click="showLogbookDialog(item)"
-                        >
-                          View Report
-                        </v-btn>
+
+                        <v-menu v-if="item.inspectionSet" location="bottom end">
+                          <template v-slot:activator="{ props }">
+                            <v-btn
+                              v-bind="props"
+                              icon
+                              variant="text"
+                              size="small"
+                              class="my-1 mx-1 text-grey-darken-1"
+                            >
+                              <v-icon>mdi-dots-vertical</v-icon>
+                            </v-btn>
+                          </template>
+                          <v-list density="compact">
+                            <v-list-item @click="showLogbookDialog(item)">
+                              <v-list-item-title>View Report</v-list-item-title>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
                       </div>
                     </template>
                   </v-data-table>
@@ -306,35 +324,58 @@
         </v-card>
       </div>
 
-      <v-dialog v-model="notifyDialog" max-width="500px">
+      <v-dialog v-model="emailDialog" max-width="500px">
         <v-card>
-          <v-card-title class="text-h5">Notify Applicant</v-card-title>
+          <v-card-title class="text-h5">Compose Email</v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <p>
-              You are about to notify the applicant with the following details:
+              Email details for application
+              <strong>{{ currentApplicant?.applicationNumber }}</strong
+              >:
             </p>
+
             <v-text-field
-              v-model="notifyMessage"
-              label="Message"
+              v-model="recipientEmail"
+              label="Recipient Email"
+              type="email"
               outlined
               dense
-              disabled
-              class="my-4"
+              required
+              class="my-3"
             ></v-text-field>
-            <p><strong>Applicant:</strong> {{ currentApplicant?.name }}</p>
-            <p>
-              <strong>Application Number:</strong>
-              {{ currentApplicant?.applicationNumber }}
+
+            <v-text-field
+              v-model="emailSubject"
+              label="Subject"
+              outlined
+              dense
+              required
+              class="mb-3"
+            ></v-text-field>
+
+            <v-textarea
+              v-model="emailBody"
+              label="Email Description / Body"
+              outlined
+              rows="6"
+              no-resize
+              required
+              class="mb-4"
+            ></v-textarea>
+
+            <p class="text-caption text-medium-emphasis">
+              *The applicant's name and application number are used to pre-fill
+              the email context.
             </p>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="notifyDialog = false"
+            <v-btn color="blue darken-1" text @click="emailDialog = false"
               >Cancel</v-btn
             >
-            <v-btn color="blue darken-1" text @click="sendNotification"
-              >Send Notification</v-btn
+            <v-btn color="blue darken-1" text @click="sendEmail"
+              >Send Email</v-btn
             >
           </v-card-actions>
         </v-card>
@@ -476,28 +517,33 @@ import { ref, computed } from "vue";
 const search = ref("");
 const loading = ref(false);
 const activeTab = ref("applied");
-const notifyDialog = ref(false);
+const filterStatus = ref("Total");
+const currentApplicant = ref(null);
+
+// **UPDATED: Email State**
+const emailDialog = ref(false); // Renamed from notifyDialog
+const recipientEmail = ref("");
+const emailSubject = ref("");
+const emailBody = ref(
+  "Dear Applicant,\n\nYour Building Permit (Permit No: [ApplicationNumber]) has been approved. Please submit the required Notice of Construction (NOC) within 120 days from the date of permit issuance to avoid permit inactivity.\n\nThank you,\nBuilding Permit Admin"
+);
+
+// Inspection/Logbook State
 const setInspectionDialog = ref(false);
 const logbookDialog = ref(false);
 const currentLogbook = ref(null);
-const currentApplicant = ref(null); // Used for both tabs
+const inspectionSchedule = ref({
+  location: "",
+  date: null,
+  time: null,
+});
 
 // Snackbar State
 const snackbar = ref(false);
 const snackbarText = ref("");
 const snackbarColor = ref("success");
 
-const notifyMessage = ref(
-  "Please submit the required Notice of Construction (NOC) within 120 days from the date of permit issuance to avoid permit inactivity."
-);
-const inspectionSchedule = ref({
-  location: "", // No longer used for occupancy, but kept for consistency
-  date: null,
-  time: null,
-});
-const filterStatus = ref("Total");
-
-// --- Data ---
+// --- Data (Unchanged for arrays) ---
 const notifications = ref([
   {
     title: "Documents submitted for verification",
@@ -581,6 +627,14 @@ const appliedApplicants = ref([
     dateSubmitted: "04/02/2025",
     status: "Incomplete",
   },
+  {
+    initials: "JD",
+    name: "John Doe",
+    applicationNumber: "BP-2024-808456-T",
+    profession: "Architect",
+    dateSubmitted: "04/03/2025",
+    status: "Complete",
+  },
 ]);
 
 const approvedPermitStatuses = ref([
@@ -642,10 +696,10 @@ const approvedPermitStatuses = ref([
     applicationNumber: "BP-2025-005-E",
     name: "Czarina Lopez",
     dateIssued: "09/01/2025",
-    nocSubmitted: false,
-    inspectionSet: false,
+    nocSubmitted: false, // Set to true to test ACTIVE status
+    inspectionSet: true,
     logbook: {
-      currentStatus: "Not Yet Scheduled",
+      currentStatus: "Active Construction",
       entries: [],
     },
   },
@@ -656,66 +710,136 @@ const unreadNotificationsCount = computed(
   () => notifications.value.filter((n) => !n.read).length
 );
 
-const appliedApplicantsCount = computed(() => appliedApplicants.value.length);
-const pendingApplicantsCount = computed(
-  () => appliedApplicants.value.filter((a) => a.status === "Pending").length
-);
-const verifiedApplicantsCount = computed(
-  () => appliedApplicants.value.filter((a) => a.status === "Complete").length
-);
-const returnApplicantsCount = computed(
-  () => appliedApplicants.value.filter((a) => a.status === "Incomplete").length
-);
-
-const statusCards = computed(() => [
-  {
-    title: "Total Applicants",
-    count: appliedApplicantsCount.value,
-    icon: "mdi-account-group",
-    color: "#007bff",
-    status: "Total",
-  },
-  {
-    title: "Pending",
-    count: pendingApplicantsCount.value,
-    icon: "mdi-clock-outline",
-    color: "#ffc107",
-    status: "Pending",
-  },
-  {
-    title: "Verified",
-    count: verifiedApplicantsCount.value,
-    icon: "mdi-check-circle-outline",
-    color: "#28a745",
-    status: "Verified",
-  },
-  {
-    title: "Return",
-    count: returnApplicantsCount.value,
-    icon: "mdi-alert-circle-outline",
-    color: "#dc3545",
-    status: "Return",
-  },
-]);
-
-const filterOptions = computed(() => [
-  { title: "All", status: "Total" },
-  { title: "Pending", status: "Pending" },
-  { title: "Verified", status: "Verified" },
-  { title: "Return", status: "Return" },
-]);
-
+// Helper function to determine the Approved Permit Status (ACTIVE/INACTIVE/NOT YET STARTED)
 const getApprovedPermitStatus = (dateIssued, nocSubmitted) => {
-  if (nocSubmitted) return "ACTIVE";
+  if (nocSubmitted) return "ACTIVE"; // User's requested "Pending" is mapped to Active
   const issueDate = new Date(dateIssued);
   const today = new Date();
   const diffDays = Math.ceil(
     (today.getTime() - issueDate.getTime()) / (1000 * 60 * 60 * 24)
   );
-  // Assuming a 120-day limit for NOC submission
-  return diffDays > 120 ? "INACTIVE" : "NOT YET STARTED";
+  if (diffDays <= 120) return "NOT YET STARTED";
+  return "INACTIVE";
 };
 
+// Processed permits for easier filtering/counting
+const processedApprovedPermits = computed(() =>
+  approvedPermitStatuses.value.map((item) => ({
+    ...item,
+    status: getApprovedPermitStatus(item.dateIssued, item.nocSubmitted),
+  }))
+);
+
+// --- Applied Applicants Cards (3 metrics + 1 placeholder) ---
+const appliedTotalCount = computed(() => appliedApplicants.value.length);
+const completeCount = computed(
+  () => appliedApplicants.value.filter((a) => a.status === "Complete").length
+);
+const incompleteCount = computed(
+  () => appliedApplicants.value.filter((a) => a.status === "Incomplete").length
+);
+
+const appliedStatusCards = computed(() => [
+  {
+    title: "Total Applicants",
+    count: appliedTotalCount.value,
+    icon: "mdi-account-group",
+    color: "#007bff", // Blue
+    status: "Total",
+  },
+  {
+    title: "Complete",
+    count: completeCount.value,
+    icon: "mdi-check-circle-outline",
+    color: "#28a745", // Green
+    status: "Complete",
+  },
+  {
+    title: "Incomplete",
+    count: incompleteCount.value,
+    icon: "mdi-alert-circle-outline",
+    color: "#dc3545", // Red
+    status: "Incomplete",
+  },
+  // Fourth card is a hidden placeholder to maintain the 4-column grid design
+  { title: null, count: 0, icon: null, color: null, status: null },
+]);
+
+// --- Approved Statuses Cards (4 metrics) ---
+const totalApprovedCount = computed(
+  () => processedApprovedPermits.value.length
+);
+const activePermitCount = computed(
+  () =>
+    processedApprovedPermits.value.filter((a) => a.status === "ACTIVE").length
+);
+const inactivePermitCount = computed(
+  () =>
+    processedApprovedPermits.value.filter((a) => a.status === "INACTIVE").length
+);
+const notYetStartedCount = computed(
+  () =>
+    processedApprovedPermits.value.filter((a) => a.status === "NOT YET STARTED")
+      .length
+);
+
+const approvedStatusCards = computed(() => [
+  {
+    title: "Total Applicants",
+    count: totalApprovedCount.value,
+    icon: "mdi-file-check-outline",
+    color: "#007bff", // Blue
+    status: "Total",
+  },
+  {
+    // Mapping user's "Pending" to "Active" for Approved Permits
+    title: "Active Permits",
+    count: activePermitCount.value,
+    icon: "mdi-hand-coin-outline",
+    color: "#dc3545", // Red
+    status: "ACTIVE",
+  },
+  {
+    title: "Inactive",
+    count: inactivePermitCount.value,
+    icon: "mdi-alert-octagon-outline",
+    color: "#dc3545", // Red
+    status: "INACTIVE",
+  },
+  {
+    title: "Not Yet Started",
+    count: notYetStartedCount.value,
+    icon: "mdi-clock-time-three-outline",
+    color: "#ffc107", // Yellow
+    status: "NOT YET STARTED",
+  },
+]);
+
+// --- Dynamic Components based on Active Tab ---
+const dynamicStatusCards = computed(() => {
+  return activeTab.value === "applied"
+    ? appliedStatusCards.value
+    : approvedStatusCards.value;
+});
+
+const dynamicFilterOptions = computed(() => {
+  if (activeTab.value === "applied") {
+    return [
+      { title: "All", value: "Total" },
+      { title: "Complete", value: "Complete" },
+      { title: "Incomplete", value: "Incomplete" },
+    ];
+  } else {
+    return [
+      { title: "All", value: "Total" },
+      { title: "Active Permits", value: "ACTIVE" },
+      { title: "Inactive", value: "INACTIVE" },
+      { title: "Not Yet Started", value: "NOT YET STARTED" },
+    ];
+  }
+});
+
+// --- Filtering Logic ---
 const filteredAppliedApplicants = computed(() => {
   const searchTerm = search.value.toLowerCase();
   const filtered = appliedApplicants.value.filter((item) => {
@@ -735,62 +859,21 @@ const filteredAppliedApplicants = computed(() => {
 
 const filteredApprovedPermitStatuses = computed(() => {
   const searchTerm = search.value.toLowerCase();
-  return approvedPermitStatuses.value
-    .map((item) => ({
-      ...item,
-      status: getApprovedPermitStatus(item.dateIssued, item.nocSubmitted),
-    }))
-    .filter((item) => {
-      const matchesSearch =
-        item.name.toLowerCase().includes(searchTerm) ||
-        item.applicationNumber.toLowerCase().includes(searchTerm);
-      if (filterStatus.value === "Total" || !filterStatus.value) {
-        return matchesSearch;
-      }
-      // Note: filterStatus may hold "Pending", "Verified", "Return" which
-      // won't match "ACTIVE", "INACTIVE", "NOT YET STARTED".
-      // We'll keep the filter logic as-is but note it's less useful here.
+  return processedApprovedPermits.value.filter((item) => {
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchTerm) ||
+      item.applicationNumber.toLowerCase().includes(searchTerm);
+    if (filterStatus.value === "Total" || !filterStatus.value) {
       return matchesSearch;
-    });
-});
-
-// New computed property to filter/simplify log entries
-const simplifiedLogEntries = computed(() => {
-  if (!currentLogbook.value || !currentLogbook.value.entries) return [];
-
-  // Filter logs to show only relevant major milestones/events
-  return currentLogbook.value.entries
-    .map((entry) => {
-      let activity = entry.activity;
-      let inspector = entry.inspector.includes("Applicant")
-        ? "City Inspector"
-        : entry.inspector;
-      let status = entry.status;
-
-      if (status === "NOC") {
-        activity = "Notice of Construction (NOC) submitted.";
-        status = "NOC Submitted"; // Use a clearer status for display
-      } else if (
-        status === "Started" ||
-        activity.toLowerCase().includes("construction started")
-      ) {
-        activity = "Construction has officially started.";
-        status = "Started";
-      } else if (status === "Scheduled") {
-        activity = activity; // Keep full activity for scheduling updates
-        status = "Inspection Scheduled";
-      } else if (status === "Delayed") {
-        activity = "Construction delayed (inspector noted).";
-        status = "Delayed";
-      }
-
-      return { ...entry, activity, inspector, status };
-    })
-    .reverse(); // Display newest first
+    }
+    return (
+      matchesSearch &&
+      item.status.toLowerCase() === filterStatus.value.toLowerCase()
+    );
+  });
 });
 
 // --- Methods ---
-// New method to show custom alert/snackbar
 function showSnackbar(message, color = "success") {
   snackbarText.value = message;
   snackbarColor.value = color;
@@ -808,6 +891,11 @@ function closeNotifications() {
   notifications.value.forEach((notification) => {
     notification.read = true;
   });
+}
+
+function resetFilter(tabName) {
+  // Resets the filter status when switching tabs
+  filterStatus.value = "Total";
 }
 
 function filterByStatus(status) {
@@ -839,15 +927,17 @@ function getLogIcon(status) {
 
 function getStatusColor(status) {
   const statusColors = {
-    Complete: "green",
-    Incomplete: "red",
-    Pending: "orange",
-    Verified: "green",
-    Return: "red",
-    ACTIVE: "green",
-    INACTIVE: "red",
-    "NOT YET STARTED": "orange",
-    // Logbook statuses for chip colors
+    // Applied Applicants Statuses
+    Complete: "#28a745", // Green (Requested)
+    Incomplete: "#dc3545", // Red (Requested)
+    Pending: "#ffc107", // Orange (Fallback for Applied)
+
+    // Approved Permit Statuses (using requested colors)
+    ACTIVE: "#dc3545", // Red (Mapped from user's requested "Pending")
+    INACTIVE: "#dc3545", // Red (Requested)
+    "NOT YET STARTED": "#ffc107", // Yellow (Requested)
+
+    // Logbook Statuses
     "Active Construction": "light-green-darken-2",
     "Construction Inactive": "deep-orange",
     "Not Yet Scheduled": "blue-grey",
@@ -857,46 +947,60 @@ function getStatusColor(status) {
 }
 
 function getAvatarColor(initials) {
-  const colors = { LF: "#007bff", AC: "#28a745", MR: "#dc3545" };
+  const colors = { LF: "#007bff", AC: "#28a745", MR: "#dc3545", JD: "#6f42c1" };
   return colors[initials] || "grey";
-}
-
-function viewDetails(item) {
-  showSnackbar(
-    `Redirecting to details for Application No. ${item.applicationNumber}`,
-    "info"
-  );
-  // In a real app, this would be a router push to the details page:
-  // router.push({ name: 'ApplicantDetails', params: { id: item.applicationNumber } });
 }
 
 function logout() {
   console.log("Logged out");
 }
 
-function showNotifyDialog(item) {
-  // Only for Approved tab since Occupancy was removed
+// **UPDATED: Show Email Dialog**
+function showEmailDialog(item) {
   currentApplicant.value = item;
-  notifyMessage.value =
-    "Please submit the required Notice of Construction (NOC) within 120 days from the date of permit issuance to avoid permit inactivity.";
-  notifyDialog.value = true;
+
+  // Set placeholder values
+  recipientEmail.value = `${item.name
+    .toLowerCase()
+    .replace(/\s/g, ".")}@example.com`;
+  emailSubject.value = `Action Required: Notice of Construction for Permit ${item.applicationNumber}`;
+
+  // Dynamic body pre-fill
+  emailBody.value = emailBody.value.replace(
+    "[ApplicationNumber]",
+    item.applicationNumber
+  );
+
+  emailDialog.value = true;
 }
 
-function sendNotification() {
+// **UPDATED: Send Email Function**
+function sendEmail() {
+  if (!recipientEmail.value || !emailSubject.value || !emailBody.value) {
+    showSnackbar("Please fill in all email fields.", "error");
+    return;
+  }
+
+  // Simulating email submission
   console.log(
-    `Notification sent to ${currentApplicant.value.name} with message: ${notifyMessage.value}`
+    `Email sent to ${recipientEmail.value} (Applicant: ${currentApplicant.value.name})`
   );
-  notifyDialog.value = false;
-  showSnackbar("Notification sent successfully!", "info");
+  console.log(`Subject: ${emailSubject.value}`);
+  console.log(`Body: ${emailBody.value}`);
+
+  // Reset email body to original template for the next email
+  emailBody.value = emailBody.value.replace(
+    currentApplicant.value.applicationNumber,
+    "[ApplicationNumber]"
+  );
+
+  emailDialog.value = false;
+  showSnackbar("Email sent successfully!", "info");
 }
 
 function showSetInspectionDialog(item) {
-  // Only for Approved tab since Occupancy was removed
   currentApplicant.value = item;
-  // Placeholder location since site location isn't stored on approvedPermitStatuses item.
   inspectionSchedule.value.location = "Site Location (Placeholder)";
-
-  // Populate fields if already set (for 'Update Schedule')
   inspectionSchedule.value.date = item.scheduleDate || null;
   inspectionSchedule.value.time = item.scheduleTime || null;
 
@@ -918,12 +1022,10 @@ function saveInspectionSchedule() {
     const permit = approvedPermitStatuses.value[index];
     const isUpdate = permit.inspectionSet;
 
-    // Update schedule details
     permit.inspectionSet = true;
     permit.scheduleDate = inspectionSchedule.value.date;
     permit.scheduleTime = inspectionSchedule.value.time;
 
-    // Log the action
     const newEntry = {
       date: new Date().toLocaleDateString("en-US", {
         month: "long",
@@ -937,7 +1039,6 @@ function saveInspectionSchedule() {
       status: "Scheduled",
     };
 
-    // Update/initialize logbook
     if (!permit.logbook) {
       permit.logbook = { currentStatus: "Scheduled", entries: [] };
     }

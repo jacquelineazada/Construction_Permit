@@ -1,13 +1,13 @@
 // db.js
 import mysql from "mysql2/promise";
 
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
-
+// Database connection configuration
 const db = mysql.createPool({
-  host: DB_HOST,
-  user: DB_USER,
-  password: DB_PASSWORD,
-  database: DB_NAME,
+  host: "127.0.0.1",
+  user: "root",
+  password: "", // leave empty if no password is set
+  database: "copems", // replace with your actual database name
+  charset: "utf8mb4",
 });
 
 console.log("✅ Connected to MariaDB (Promise Pool)");

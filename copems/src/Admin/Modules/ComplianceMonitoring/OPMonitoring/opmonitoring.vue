@@ -1,3 +1,4 @@
+
 <template>
   <v-app>
     <v-navigation-drawer app permanent>
@@ -156,8 +157,8 @@
               </v-col>
             </v-row>
 
-            <v-row class="mb-4 align-center">
-              <v-col cols="12" sm="8" md="6">
+            <v-row class="mb-4 align-center justify-end">
+              <v-col cols="12" sm="10" md="6" class="d-flex justify-end">
                 <v-text-field
                   v-model="search"
                   label="Search applicants..."
@@ -168,9 +169,9 @@
                   single-line
                   :loading="loading"
                   @click:append-inner="onClick"
+                  style="max-width: 300px; margin-right: 8px"
                 ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="4" md="6" class="d-flex justify-end">
+
                 <v-menu :close-on-content-click="false" location="bottom right">
                   <template v-slot:activator="{ props }">
                     <v-btn
@@ -178,6 +179,7 @@
                       class="text-white"
                       prepend-icon="mdi-filter-variant"
                       v-bind="props"
+                      style="height: 48px"
                     >
                       Filter
                     </v-btn>
@@ -194,54 +196,132 @@
                 </v-menu>
               </v-col>
             </v-row>
+            <v-tabs
+              v-model="currentTab"
+              color="#007bff"
+              slider-color="#007bff"
+              class="mb-4"
+            >
+              <v-tab value="monitoring">Occupancy Monitoring</v-tab>
+              <v-tab value="checklist">Occupancy Checklist</v-tab>
+            </v-tabs>
 
-            <v-card class="elevation-1">
-              <v-data-table
-                :headers="appliedApplicantsHeaders"
-                :items="filteredAppliedApplicants"
-                item-key="name"
-                class="elevation-0"
-                hide-default-footer
-              >
-                <template v-slot:item.name="{ item }">
-                  <div class="d-flex align-center py-2">
-                    <v-avatar
-                      size="36"
-                      :color="getAvatarColor(item.initials)"
-                      class="me-2 text-white"
+            <v-window v-model="currentTab">
+              <v-window-item value="monitoring">
+                <v-card class="elevation-1">
+                  <v-data-table
+                    :headers="appliedApplicantsHeaders"
+                    :items="filteredAppliedApplicants"
+                    item-key="name"
+                    class="elevation-0"
+                    hide-default-footer
+                  >
+                    <template v-slot:item.name="{ item }">
+                      <div class="d-flex align-center py-2">
+                        <v-avatar
+                          size="36"
+                          :color="getAvatarColor(item.initials)"
+                          class="me-2 text-white"
+                        >
+                          {{ item.initials }}
+                        </v-avatar>
+                        <span>{{ item.name }}</span>
+                      </div>
+                    </template>
+                    <template v-slot:item.status="{ item }">
+                      <v-chip :color="getStatusColor(item.status)" dark small>
+                        {{ item.status }}
+                      </v-chip>
+                    </template>
+                    <template v-slot:item.action="{ item }">
+                      <v-btn
+                        v-if="item.status === 'Not yet started'"
+                        color="#007bff"
+                        class="text-white"
+                        size="small"
+                        @click="showNotifyDialog(item)"
+                      >
+                        Notify
+                      </v-btn>
+                      <v-btn
+                        v-else-if="item.status === 'Inspection Completed'"
+                        color="#007bff"
+                        class="text-white"
+                        size="small"
+                        @click="showRemarksDialog(item)"
+                      >
+                        Remarks
+                      </v-btn>
+                    </template>
+                  </v-data-table>
+                </v-card>
+              </v-window-item>
+
+              <v-window-item value="checklist">
+                <v-card class="elevation-1 pa-4">
+                  <v-card-title
+                    class="text-h6 font-weight-bold mb-3 d-flex align-center"
+                  >
+                    <v-icon color="green-darken-2" class="me-2"
+                      >mdi-list-status</v-icon
                     >
-                      {{ item.initials }}
-                    </v-avatar>
-                    <span>{{ item.name }}</span>
+                    Final Occupancy Checklist Requirements
+                  </v-card-title>
+
+                  <div
+                    v-for="(group, groupIndex) in checklistData"
+                    :key="groupIndex"
+                    class="mb-4"
+                  >
+                    <v-list-item-title
+                      class="text-subtitle-1 font-weight-bold py-2"
+                      :class="`text-${group.iconColor}-darken-2`"
+                      style="
+                        border-bottom: 2px solid #e0e0e0;
+                        margin-bottom: 8px;
+                      "
+                    >
+                      <v-icon :color="group.iconColor" class="me-2">{{
+                        group.icon
+                      }}</v-icon>
+                      {{ group.title }}
+                    </v-list-item-title>
+
+                    <v-list density="compact" class="py-0">
+                      <v-list-item
+                        v-for="(item, itemIndex) in group.items"
+                        :key="itemIndex"
+                        class="px-2 py-0"
+                        :class="{ 'mb-2': itemIndex < group.items.length - 1 }"
+                      >
+                        <v-checkbox
+                          v-model="item.isSubmitted"
+                          :label="item.text"
+                          density="compact"
+                          hide-details
+                          color="green-darken-1"
+                        >
+                        </v-checkbox>
+                      </v-list-item>
+                    </v-list>
+                    <v-divider
+                      v-if="groupIndex < checklistData.length - 1"
+                      class="mt-4"
+                    ></v-divider>
                   </div>
-                </template>
-                <template v-slot:item.status="{ item }">
-                  <v-chip :color="getStatusColor(item.status)" dark small>
-                    {{ item.status }}
-                  </v-chip>
-                </template>
-                <template v-slot:item.action="{ item }">
-                  <v-btn
-                    v-if="item.status === 'Not yet started'"
-                    color="#007bff"
-                    class="text-white"
-                    size="small"
-                    @click="showNotifyDialog(item)"
+
+                  <v-alert
+                    v-if="!checklistData.length"
+                    type="info"
+                    variant="tonal"
+                    icon="mdi-information-outline"
+                    class="mt-4"
                   >
-                    Notify
-                  </v-btn>
-                  <v-btn
-                    v-else-if="item.status === 'Inspection Completed'"
-                    color="#007bff"
-                    class="text-white"
-                    size="small"
-                    @click="showRemarksDialog(item)"
-                  >
-                    Remarks
-                  </v-btn>
-                </template>
-              </v-data-table>
-            </v-card>
+                    No checklist data is currently available.
+                  </v-alert>
+                </v-card>
+              </v-window-item>
+            </v-window>
           </v-card-text>
         </v-card>
       </div>
@@ -458,6 +538,7 @@ import { ref, computed } from "vue";
 
 const search = ref("");
 const loading = ref(false);
+const currentTab = ref("monitoring"); // New ref for the tabs
 
 const notifyDialog = ref(false);
 const remarksDialog = ref(false);
@@ -501,7 +582,7 @@ const navItems = [
   {
     title: "Occupancy Permit",
     icon: "mdi-file-certificate-outline",
-    to: "/admin/opmonitoring",
+    to: "/occupancy-permit",
   },
 ];
 
@@ -580,15 +661,70 @@ const appliedApplicants = ref([
   },
 ]);
 
+// New Data for Occupancy Checklist
+const checklistData = ref([
+  {
+    title: "Application & Permit Documents",
+    icon: "mdi-file-edit-outline",
+    iconColor: "blue",
+    color: "blue-lighten-5",
+    items: [
+      {
+        text: "Duly Accomplished Occupancy Permit Application Form",
+        isSubmitted: true,
+      },
+      { text: "Copy of Approved Building Permit", isSubmitted: true },
+      { text: "Copy of Approved Locational Clearance", isSubmitted: true },
+      {
+        text: "Photocopy of current Professional Tax Receipt (PTR)",
+        isSubmitted: true,
+      },
+    ],
+  },
+  {
+    title: "Construction Documents & Clearances",
+    icon: "mdi-tools",
+    iconColor: "orange",
+    color: "orange-lighten-5",
+    items: [
+      { text: "As-Built Plans (5 sets)", isSubmitted: true },
+      {
+        text: "Logbook and Certificate of Completion (CE/ARCH)",
+        isSubmitted: true,
+      },
+      {
+        text: "Certificate of Final Electrical Inspection (CFEI)",
+        isSubmitted: false,
+      },
+      {
+        text: "Certificate of Final Plumbing Inspection (CFPI)",
+        isSubmitted: true,
+      },
+      { text: "Fire Safety Inspection Certificate (FSIC)", isSubmitted: false },
+      {
+        text: "Clearance from other concerned agencies (e.g. CAAP, LLDA)",
+        isSubmitted: true,
+      },
+    ],
+  },
+  {
+    title: "Supporting Documents",
+    icon: "mdi-folder-open-outline",
+    iconColor: "teal",
+    color: "teal-lighten-5",
+    items: [
+      { text: "Structural Stability Certification", isSubmitted: true },
+      { text: "Water Testing / Potability Certificate", isSubmitted: false },
+      { text: "Pictures of the finished building", isSubmitted: true },
+    ],
+  },
+]);
+
 const unreadNotificationsCount = computed(
   () => notifications.value.filter((n) => !n.read).length
 );
 
 const appliedApplicantsCount = computed(() => appliedApplicants.value.length);
-const notYetStartedCount = computed(
-  () =>
-    appliedApplicants.value.filter((a) => a.status === "Not yet started").length
-);
 const scheduledApplicantsCount = computed(
   () => appliedApplicants.value.filter((a) => a.status === "Scheduled").length
 );
@@ -850,3 +986,4 @@ function logout() {
   align-items: center;
 }
 </style>
+```

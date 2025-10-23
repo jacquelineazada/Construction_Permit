@@ -6,11 +6,13 @@ import user from "./routes/user_account.js";
 import address from "./routes/address.js";
 import building_owner from "./routes/building_owner.js";
 import bldg_use_group from "./routes/bldg_use_group.js";
+import building_use from "./routes/building_use.js";
 
 const app = express();
 const PORT = 4000;
 
 const routes = [
+  { path: "/api/building-use", handler: building_use },
   { path: "/api/user", handler: user },
   { path: "/api/address", handler: address },
   { path: "/api/building-owner", handler: building_owner },

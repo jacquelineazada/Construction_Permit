@@ -63,6 +63,7 @@ const router = createRouter({
               "@/Admin/Modules/ComplianceMonitoring/OPMonitoring/opmonitoring.vue"
             ), // Or any other component for the root
         },
+
         // Occupancy Permit Admin
       ],
     },
@@ -82,7 +83,11 @@ const router = createRouter({
           name: "services",
           component: () => import("@/pages/services.vue"),
         },
-
+        {
+          path: "noc",
+          name: "noc",
+          component: () => import("@/Applicant/NocApplication/noc.vue"), // Or any other component for the root
+        },
         // Building Permit Applicant
 
         // Locational Clearance Applicant

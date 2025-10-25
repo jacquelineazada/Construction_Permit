@@ -1,81 +1,13 @@
 <template>
   <v-app>
-    <v-app-bar flat color="#0000CC" dark height="88" app>
-      <v-toolbar-title class="text-h5 font-weight-bold page-title-gradient">
-        <v-icon color="white" class="mr-2">mdi-office-building</v-icon>
-        Construction Permit Management System
-      </v-toolbar-title>
-    </v-app-bar>
-
     <v-main class="no-scroll">
       <v-container fluid class="pa-0 content-area">
         <v-row no-gutters class="fill-height">
-          <!-- Sidebar/Quick Guide -->
-          <v-col cols="12" md="3" class="pa-0">
-            <v-card
-              flat
-              class="pa-4 quick-guide-card d-flex flex-column justify-space-between elevation-2"
-              style="
-                border-right: 1px solid #e0e0e0;
-                height: 100%;
-                background: #fcfcff;
-              "
-            >
-              <div>
-                <h4 class="mb-2 text-h5 font-weight-bold text-blue-darken-3">
-                  Building Permit Application
-                </h4>
-                <div class="text-subtitle-2 mb-6 text-blue-grey-darken-1">
-                  Follow these steps to complete your application
-                </div>
-                <v-card
-                  v-for="(step, index) in steps"
-                  :key="index"
-                  flat
-                  :color="currentStep === index ? 'blue-lighten-5' : '#f6f8fa'"
-                  class="d-flex align-center pa-3 mb-4 rounded-lg quick-guide-step"
-                  :class="{
-                    'clickable-step': index === 0,
-                    'active-step': currentStep === index,
-                  }"
-                  @click="goToStep(index)"
-                  elevation="currentStep === index ? 2 : 0"
-                  style="transition: box-shadow 0.16s, background 0.16s"
-                >
-                  <v-avatar
-                    :color="currentStep === index ? 'primary' : '#2563EB'"
-                    size="36"
-                    class="white--text mr-3 quick-guide-avatar"
-                  >
-                    <span class="text-h6 font-weight-bold">
-                      {{ index + 1 }}
-                    </span>
-                  </v-avatar>
-                  <div class="font-weight-bold text-body-1 step-label">
-                    {{ step }}
-                  </div>
-                </v-card>
-              </div>
-              <v-spacer></v-spacer>
-              <div class="mt-4">
-                <v-btn
-                  block
-                  color="white"
-                  outlined
-                  to="/login"
-                  class="text-capitalize font-weight-bold"
-                  @click="handleLogout"
-                >
-                  <v-icon left>mdi-logout</v-icon>
-                  Logout
-                </v-btn>
-              </div>
-            </v-card>
-          </v-col>
-
-          <!-- Main Content -->
-          <v-col cols="12" md="9" class="pa-6 main-content-bg">
-            <!-- Application Process Card -->
+          <v-col cols="12" class="pa-6 main-content-bg">
+            <v-btn text color="primary" @click="goBack" class="mb-4">
+              <v-icon left>mdi-arrow-left</v-icon>
+              Back
+            </v-btn>
             <v-card
               flat
               class="mb-6 pa-5 process-card elevation-3"
@@ -111,7 +43,6 @@
               </div>
             </v-card>
 
-            <!-- Timeline Card -->
             <v-card
               flat
               outlined
@@ -147,7 +78,6 @@
               </div>
             </v-card>
 
-            <!-- Requirements Overview Card -->
             <v-card
               flat
               outlined
@@ -229,52 +159,95 @@
               </div>
             </v-card>
 
-            <!-- Important Notes Card -->
             <v-card
               flat
               outlined
               color="#fff"
-              class="mb-6 pa-4 important-notes-card elevation-1"
+              class="mb-6 pa-4 requirement-checklist-card elevation-1"
             >
               <div class="pa-0">
-                <div class="d-flex align-center mb-3">
+                <div class="d-flex align-center mb-4">
                   <v-icon color="#2962ff" size="22" class="mr-2">
-                    mdi-note-multiple
+                    mdi-format-list-checks
                   </v-icon>
                   <span class="text-h6 font-weight-bold" style="color: #222">
-                    Important Notes
+                    Documentary Requirement Checklist for Building Permit
                   </span>
                 </div>
-                <div>
-                  <div class="mb-2">
-                    <span class="font-weight-bold">
-                      Complete Documentation:
-                    </span>
-                    Ensure all required documents are submitted to avoid delays
-                    in processing.
-                  </div>
-                  <div class="mb-2">
-                    <span class="font-weight-bold">
-                      Processing Time Variation:
-                    </span>
-                    Processing time may vary based on the complexity of your
-                    application and current workload.
-                  </div>
-                  <div class="mb-2">
-                    <span class="font-weight-bold">Technical Support:</span>
-                    For technical assistance, contact our Building Official at
-                    (054) 473-2328 ext. 205.
-                  </div>
-                  <div>
-                    <span class="font-weight-bold">Status Updates:</span>
-                    You can check your application status online or visit our
-                    office during business hours.
-                  </div>
-                </div>
+
+                <v-row>
+                  <v-col cols="12" md="6" class="pt-0">
+                    <v-expansion-panels flat accordion>
+                      <v-expansion-panel
+                        v-for="(category, i) in checklistCol1"
+                        :key="i"
+                        class="mb-2"
+                        style="border: 1px solid #e0e0e0; border-radius: 8px"
+                      >
+                        <v-expansion-panel-title
+                          class="font-weight-bold text-blue-darken-3"
+                        >
+                          {{ category.title }}
+                        </v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <v-list dense class="pa-0">
+                            <v-list-item
+                              v-for="(item, j) in category.items"
+                              :key="j"
+                              class="pl-2"
+                            >
+                              <template v-slot:prepend>
+                                <v-icon color="primary" size="18" class="mr-3"
+                                  >mdi-circle-small</v-icon
+                                >
+                              </template>
+                              <v-list-item-title class="text-body-1">{{
+                                item
+                              }}</v-list-item-title>
+                            </v-list-item>
+                          </v-list>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-col>
+                  <v-col cols="12" md="6" class="pt-0">
+                    <v-expansion-panels flat accordion>
+                      <v-expansion-panel
+                        v-for="(category, i) in checklistCol2"
+                        :key="i"
+                        class="mb-2"
+                        style="border: 1px solid #e0e0e0; border-radius: 8px"
+                      >
+                        <v-expansion-panel-title
+                          class="font-weight-bold text-blue-darken-3"
+                        >
+                          {{ category.title }}
+                        </v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <v-list dense class="pa-0">
+                            <v-list-item
+                              v-for="(item, j) in category.items"
+                              :key="j"
+                              class="pl-2"
+                            >
+                              <template v-slot:prepend>
+                                <v-icon color="primary" size="18" class="mr-3"
+                                  >mdi-circle-small</v-icon
+                                >
+                              </template>
+                              <v-list-item-title class="text-body-1">{{
+                                item
+                              }}</v-list-item-title>
+                            </v-list-item>
+                          </v-list>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-col>
+                </v-row>
               </div>
             </v-card>
 
-            <!-- Additional Information Cards -->
             <div class="important-info-wrapper pa-4 mb-6">
               <div class="d-flex align-center mb-4">
                 <v-icon color="#ffc107" size="28" class="mr-2">
@@ -357,15 +330,6 @@ export default {
   name: "BuildingPermitPage",
   data() {
     return {
-      currentStep: 0,
-      steps: [
-        "Fill up the Unified Application Form",
-        "Filled up Locational Clearance Application Form",
-        "Upload Building Plans & Lot Plans",
-        "Download Required Ancillary Permits",
-        "Documentary Requirements Checklist",
-        "Payment",
-      ],
       timelineItems: [
         {
           title: "Application Submission & Verification",
@@ -406,20 +370,59 @@ export default {
         "Follow up regularly on application status",
         "Prepare all fees in advance",
       ],
+      checklistItems: [
+        {
+          title: "NEW CONSTRUCTION, ERECTION, & ADDITION",
+          items: [
+            "Architectural",
+            "Civil/Structural",
+            "Sanitary/Plumbing",
+            "Mechanical",
+            "Electrical",
+            "Electronics",
+          ],
+        },
+        {
+          title: "ALTERATION",
+          items: ["Architectural", "Civil/Structural", "Electrical"],
+        },
+        {
+          title: "RENOVATION, REPAIR, RAISING & LEGALIZATION",
+          items: ["Architectural", "Structural"],
+        },
+        {
+          title: "CONVERSION",
+          items: ["Architectural", "Structural", "Electrical", "Electronics"],
+        },
+        {
+          title: "MOVING",
+          items: ["Architectural/Structural", "Mechanical"],
+        },
+        {
+          title: "ACCESSORY BUILDING",
+          items: ["Architectural", "Structural", "Electrical", "SanZitary"],
+        },
+      ],
     };
   },
-  methods: {
-    handleLogout() {
-      // Add your logout logic here (e.g., remove tokens, redirect, etc.)
-      console.log("User logged out");
+  computed: {
+    checklistCol1() {
+      const midpoint = Math.ceil(this.checklistItems.length / 2);
+      return this.checklistItems.slice(0, midpoint);
     },
-    goToStep(index) {
-      this.currentStep = index;
-      if (index === 0) {
-        this.$router.push("/applicant/applicantdetails");
-      }
+    checklistCol2() {
+      const midpoint = Math.ceil(this.checklistItems.length / 2);
+      return this.checklistItems.slice(midpoint);
     },
   },
+  // ========== METHODS BLOCK UPDATED FOR EXTERNAL URL ==========
+  methods: {
+    goBack() {
+      // This will navigate the user to the specified URL
+      window.location.href = "http://localhost:3000/";
+    },
+  },
+  // =========================================================
 };
 </script>
 
@@ -444,7 +447,7 @@ export default {
   border-radius: 0 24px 24px 0;
 }
 
-/* Sidebar/Quick Guide */
+/* Sidebar/Quick Guide (Styles remain but are unused) */
 .quick-guide-card {
   min-height: 100%;
   background: #fcfcff;
@@ -502,7 +505,7 @@ export default {
 /* Timeline Card */
 .timeline-card,
 .requirements-card,
-.important-notes-card {
+.requirement-checklist-card {
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.04);
   background: #fff;
@@ -542,9 +545,8 @@ export default {
   font-size: 0.97rem;
 }
 /* Important Notes */
-.important-notes-card {
+.requirement-checklist-card {
   border-radius: 14px;
-  background: #fffefa;
 }
 .important-info-wrapper {
   background: #fff9e6;

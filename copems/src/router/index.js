@@ -26,6 +26,11 @@ const router = createRouter({
           name: "register",
           component: () => import("@/pages/register.vue"),
         },
+        {
+          path: "bpinquiry",
+          name: "bpinquiry",
+          component: () => import("@/pages/bpinquiry.vue"),
+        },
       ],
     },
     {
@@ -39,17 +44,35 @@ const router = createRouter({
         },
 
         // Building Permit Admin
-                {
+        {
           path: "evaluation",
           name: "evaluation",
           component: () =>
             import("@/module/admin/BuildingPermit/Evaluators/evaluation.vue")
         },
-                        {
+        {
           path: "plans",
           name: "plans",
           component: () =>
             import("@/module/admin/BuildingPermit/Evaluators/plans.vue")
+        },
+        {
+          path: "evaluationplan",
+          name: "evaluationplan",
+          component: () =>
+            import("@/module/admin/BuildingPermit/Evaluators/evaluationplan.vue")
+        },
+                {
+          path: "buildingofficial",
+          name: "buildingofficial",
+          component: () =>
+            import("@/module/admin/BuildingPermit/Head/buildingofficial.vue")
+        },
+                        {
+          path: "administrativeaide",
+          name: "administrativeaide",
+          component: () =>
+            import("@/module/admin/Administrative/administrativeaide.vue")
         },
         // Locational Clearance Admin
 
@@ -99,12 +122,6 @@ const router = createRouter({
             import("@/module/applicant/BuildingPermit/UnifiedApplication/reviewapplication.vue")
         },
         {
-          path: "buildingpermitportal",
-          name: "buildingpermitportal",
-          component: () =>
-            import("@/module/applicant/BuildingPermit/UnifiedApplication/buildingpermitportal.vue")
-        },
-        {
           path: "selectancillary",
           name: "selectancillary",
           component: () =>
@@ -123,11 +140,12 @@ const router = createRouter({
           component: () =>
             import("@/module/applicant/BuildingPermit/UnifiedApplication/applicantportal.vue")
         },
+
         {
-          path: "documentaryrequirement",
-          name: "documentaryrequirement",
+          path: "payment",
+          name: "payment",
           component: () =>
-            import("@/module/applicant/BuildingPermit/UnifiedApplication/documentaryrequirement.vue")  
+            import("@/module/applicant/BuildingPermit/UnifiedApplication/payment.vue")  
         },
         {
           path: "architectural",

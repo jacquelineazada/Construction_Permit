@@ -1,321 +1,371 @@
 <template>
   <v-app>
-    <!-- App Bar -->
-    <v-app-bar flat color="blue-darken-3" dark height="88" app>
-      <v-toolbar-title class="ml-2 font-weight-bold"
-        ><v-icon left>mdi-office-building-outline</v-icon> Building Permit
-        Portal</v-toolbar-title
-      >
-    </v-app-bar>
-
-    <v-main class="bg-grey-lighten-4">
-      <!-- Header Card -->
-      <v-card
-        flat
-        class="d-flex align-center justify-space-between px-6"
-        style="
-          background-color: white;
-          border-bottom: 1px solid #e0e0e0;
-          height: 60px;
-        "
-      >
-        <div class="d-flex align-center">
-          <v-icon color="blue-darken-3" class="mr-3" size="32"
-            >mdi-office-building-outline</v-icon
-          >
-          <h2 class="mb-0 font-weight-bold page-title-responsive gradient-text">
-            Building Permit Application
-          </h2>
-        </div>
-      </v-card>
-
-      <!-- Stepper -->
-      <v-container fluid class="px-4 mx-auto" style="max-width: 1300px">
-        <v-stepper
-          v-model="currentStep"
-          alt-labels
-          flat
-          class="mb-4 mt-2 stepper-elevated"
-        >
-          <v-stepper-header>
-            <v-stepper-item
-              title="Building Owner Information"
-              value="1"
-              :complete="currentStep > 1"
-              :color="currentStep >= 1 ? 'blue-darken-1' : 'grey lighten-2'"
-              class="stepper-item-custom"
-            ></v-stepper-item>
-            <v-divider
-              :thickness="3"
-              :style="{
-                'border-color': currentStep > 1 ? '#1976D2' : '#e0e0e0',
-              }"
-              class="mx-2"
-            ></v-divider>
-
-            <v-stepper-item
-              title="Construction Information"
-              value="2"
-              :complete="currentStep > 2"
-              :color="currentStep >= 2 ? 'blue-darken-1' : 'grey lighten-2'"
-              class="stepper-item-custom"
-            ></v-stepper-item>
-            <v-divider
-              :thickness="3"
-              :style="{
-                'border-color': currentStep > 2 ? '#1976D2' : '#e0e0e0',
-              }"
-              class="mx-2"
-            ></v-divider>
-
-            <v-stepper-item
-              title="Use or Character of Occupancy"
-              value="3"
-              :complete="currentStep > 3"
-              :color="currentStep >= 3 ? 'blue-darken-1' : 'grey lighten-2'"
-              class="stepper-item-custom"
-            ></v-stepper-item>
-            <v-divider
-              :thickness="3"
-              :style="{
-                'border-color': currentStep > 3 ? '#1976D2' : '#e0e0e0',
-              }"
-              class="mx-2"
-            ></v-divider>
-
-            <v-stepper-item
-              title="Signatories Details"
-              value="4"
-              :complete="currentStep > 4"
-              :color="currentStep >= 4 ? 'blue-darken-1' : 'grey lighten-2'"
-              class="stepper-item-custom"
-            ></v-stepper-item>
-            <v-divider
-              :thickness="3"
-              :style="{
-                'border-color': currentStep > 4 ? '#1976D2' : '#e0e0e0',
-              }"
-              class="mx-2"
-            ></v-divider>
-
-            <v-stepper-item
-              title="Review Application"
-              value="5"
-              :complete="currentStep > 5"
-              :color="currentStep >= 5 ? 'blue-darken-1' : 'grey lighten-2'"
-              class="stepper-item-custom"
-            ></v-stepper-item>
-          </v-stepper-header>
-        </v-stepper>
-
-        <v-card class="my-2 pa-4 card-shadow">
-          <v-card-text>
-            <v-form ref="form" v-model="formValid">
-              <!-- Construction Information Step -->
-              <v-card class="mb-4 card-section" v-if="currentStep === '2'">
-                <v-card-title
-                  class="text-h6 card-title-responsive section-title"
-                >
-                  <v-icon left color="blue-darken-3" class="mr-2"
-                    >mdi-map-marker</v-icon
-                  >
-                  PROJECT LOCATION
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                  <v-row dense>
-                    <v-col cols="12" sm="4">
-                      <div class="input-label">Barangay</div>
-                      <v-select
-                        v-model="barangay"
-                        :items="barangays"
-                        variant="outlined"
-                        density="comfortable"
-                        :rules="[rules.required]"
-                        prepend-inner-icon="mdi-home-group"
-                        color="blue-darken-3"
-                        style="min-height: 50px"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" sm="4">
-                      <div class="input-label">BLK. No.</div>
-                      <v-text-field
-                        v-model="blkNo"
-                        variant="outlined"
-                        density="comfortable"
-                        :rules="[rules.required]"
-                        prepend-inner-icon="mdi-numeric"
-                        color="blue-darken-3"
-                        style="min-height: 50px"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="4">
-                      <div class="input-label">Street</div>
-                      <v-text-field
-                        v-model="street"
-                        variant="outlined"
-                        density="comfortable"
-                        :rules="[rules.required]"
-                        prepend-inner-icon="mdi-road-variant"
-                        color="blue-darken-3"
-                        style="min-height: 50px"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
-
-              <v-card class="mb-4 card-section" v-if="currentStep === '2'">
-                <v-card-title
-                  class="text-h6 card-title-responsive section-title"
-                >
-                  <v-icon left color="blue-darken-3" class="mr-2"
-                    >mdi-file-document-outline</v-icon
-                  >
-                  LOT INFORMATION
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                  <v-row dense>
-                    <v-col cols="12" sm="6">
-                      <div class="input-label">TCT No.</div>
-                      <v-text-field
-                        v-model="tctNo"
-                        variant="outlined"
-                        density="comfortable"
-                        :rules="[rules.required]"
-                        prepend-inner-icon="mdi-numeric"
-                        color="blue-darken-3"
-                        style="min-height: 50px"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <div class="input-label">Current Tax Dec No.</div>
-                      <v-text-field
-                        v-model="taxDecNo"
-                        variant="outlined"
-                        density="comfortable"
-                        :rules="[rules.required]"
-                        prepend-inner-icon="mdi-numeric"
-                        color="blue-darken-3"
-                        style="min-height: 50px"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
-
-              <v-card class="mb-4 card-section" v-if="currentStep === '2'">
-                <v-card-title
-                  class="text-h6 card-title-responsive section-title"
-                >
-                  <v-icon left color="blue-darken-3" class="mr-2"
-                    >mdi-hammer-wrench</v-icon
-                  >
-                  SCOPE OF WORK
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                  <v-row dense>
-                    <v-col cols="12">
-                      <div class="input-label">Select Scope of Work</div>
-                      <v-select
-                        v-model="selectedScope"
-                        :items="scopeOfWork"
-                        variant="outlined"
-                        density="comfortable"
-                        multiple
-                        :rules="[rules.requiredScope]"
-                        chips
-                        prepend-inner-icon="mdi-format-list-bulleted"
-                        color="blue-darken-3"
-                        style="min-height: 50px"
-                      ></v-select>
-                    </v-col>
-                    <v-col
-                      v-if="selectedScope.includes('Other (Specify)')"
-                      cols="12"
-                    >
-                      <v-text-field
-                        v-model="otherDetails"
-                        label="Please specify"
-                        variant="outlined"
-                        density="comfortable"
-                        :rules="[rules.requiredOther]"
-                        color="blue-darken-3"
-                        prepend-inner-icon="mdi-pencil"
-                        class="my-1"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
-
-              <!-- Use or Character of Occupancy Step -->
-              <v-card class="mb-4 card-section" v-if="currentStep === '3'">
-                <v-card-title
-                  class="text-h6 card-title-responsive section-title"
-                >
-                  <v-icon left color="blue-darken-3" class="mr-2"
-                    >mdi-domain</v-icon
-                  >
-                  USE OR CHARACTER OF OCCUPANCY
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                  <v-row dense>
-                    <v-col cols="12" md="6">
-                      <v-select
-                        v-model="selectedGroup"
-                        :items="groups"
-                        label="Groups"
-                        variant="outlined"
-                        prepend-inner-icon="mdi-format-list-bulleted"
-                        color="blue-darken-3"
-                        hide-details
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="6">
-                      <v-select
-                        v-model="selectedCategory"
-                        :items="categories"
-                        label="Category"
-                        variant="outlined"
-                        :disabled="!selectedGroup"
-                        prepend-inner-icon="mdi-shape"
-                        color="blue-darken-3"
-                        hide-details
-                      ></v-select>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
-            </v-form>
-          </v-card-text>
-        </v-card>
-
-        <!-- Navigation Buttons -->
-        <div class="d-flex justify-end mt-6 mb-8">
-          <router-link to="/applicant/applicantdetails">
-            <v-btn
-              color="blue-grey-lighten-4"
-              class="mr-2 btn-rounded"
-              elevation="2"
-              variant="tonal"
+    <v-main class="no-scroll">
+      <v-container fluid class="pa-0 content-area fill-height">
+        <v-row no-gutters class="fill-height">
+          <v-col cols="12" md="3" class="pa-0">
+            <v-card
+              flat
+              class="pa-4 quick-guide-card d-flex flex-column justify-space-between elevation-2"
+              style="
+                border-right: 1px solid #e0e0e0;
+                height: 100%;
+                background: #fcfcff;
+              "
             >
-              <v-icon left>mdi-arrow-left</v-icon>Back
-            </v-btn>
-          </router-link>
-          <v-btn
-            color="blue-darken-3"
-            class="btn-rounded"
-            elevation="2"
-            @click="nextStep"
-            variant="elevated"
-          >
-            Next<v-icon right>mdi-arrow-right</v-icon>
-          </v-btn>
-        </div>
+              <div>
+                <h4 class="mb-2 text-h5 font-weight-bold text-blue-darken-3">
+                  Building Permit Application
+                </h4>
+                <div class="text-subtitle-2 mb-6 text-blue-grey-darken-1">
+                  Follow these steps to complete your application
+                </div>
+                <v-card
+                  v-for="(step, index) in sidebarSteps"
+                  :key="index"
+                  flat
+                  :color="sidebarStep === index ? 'blue-lighten-5' : '#f6f8fa'"
+                  class="d-flex align-center pa-3 mb-4 rounded-lg quick-guide-step"
+                  :class="{
+                    'clickable-step': index === 0,
+                    'active-step': sidebarStep === index,
+                  }"
+                  @click="goToStep(index)"
+                  elevation="sidebarStep === index ? 2 : 0"
+                  style="transition: box-shadow 0.16s, background 0.16s"
+                >
+                  <v-avatar
+                    :color="sidebarStep === index ? 'primary' : '#2563EB'"
+                    size="36"
+                    class="white--text mr-3 quick-guide-avatar"
+                  >
+                    <span class="text-h6 font-weight-bold">
+                      {{ index + 1 }}
+                    </span>
+                  </v-avatar>
+                  <div class="font-weight-bold text-body-1 step-label">
+                    {{ step }}
+                  </div>
+                </v-card>
+              </div>
+              <v-spacer></v-spacer>
+              <div class="mt-4">
+                <v-btn
+                  block
+                  color="white"
+                  outlined
+                  to="/login"
+                  class="text-capitalize font-weight-bold"
+                  @click="handleLogout"
+                >
+                  <v-icon left>mdi-logout</v-icon>
+                  Logout
+                </v-btn>
+              </div>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="9" class="main-content-bg pa-6">
+            <v-container fluid class="px-4 mx-auto" style="max-width: 1300px">
+              <v-stepper
+                v-model="formStepValue"
+                alt-labels
+                flat
+                class="mb-4 mt-2 stepper-elevated"
+              >
+                <v-stepper-header>
+                  <v-stepper-item
+                    title="Building Owner Information"
+                    value="1"
+                    :complete="parseInt(formStepValue) > 1"
+                    :color="
+                      parseInt(formStepValue) >= 1
+                        ? 'blue-darken-1'
+                        : 'grey lighten-2'
+                    "
+                    class="stepper-item-custom"
+                  ></v-stepper-item>
+                  <v-divider
+                    :thickness="3"
+                    :style="{
+                      'border-color':
+                        parseInt(formStepValue) > 1 ? '#1976D2' : '#e0e0e0',
+                    }"
+                    class="mx-2"
+                  ></v-divider>
+
+                  <v-stepper-item
+                    title="Construction Information"
+                    value="2"
+                    :complete="parseInt(formStepValue) > 2"
+                    :color="
+                      parseInt(formStepValue) >= 2
+                        ? 'blue-darken-1'
+                        : 'grey lighten-2'
+                    "
+                    class="stepper-item-custom"
+                  ></v-stepper-item>
+                  <v-divider
+                    :thickness="3"
+                    :style="{
+                      'border-color':
+                        parseInt(formStepValue) > 2 ? '#1976D2' : '#e0e0e0',
+                    }"
+                    class="mx-2"
+                  ></v-divider>
+
+                  <v-stepper-item
+                    title="Use or Character of Occupancy"
+                    value="3"
+                    :complete="parseInt(formStepValue) > 3"
+                    :color="
+                      parseInt(formStepValue) >= 3
+                        ? 'blue-darken-1'
+                        : 'grey lighten-2'
+                    "
+                    class="stepper-item-custom"
+                  ></v-stepper-item>
+                  <v-divider
+                    :thickness="3"
+                    :style="{
+                      'border-color':
+                        parseInt(formStepValue) > 3 ? '#1976D2' : '#e0e0e0',
+                    }"
+                    class="mx-2"
+                  ></v-divider>
+
+                  <v-stepper-item
+                    title="Signatories Details"
+                    value="4"
+                    :complete="parseInt(formStepValue) > 4"
+                    :color="
+                      parseInt(formStepValue) >= 4
+                        ? 'blue-darken-1'
+                        : 'grey lighten-2'
+                    "
+                    class="stepper-item-custom"
+                  ></v-stepper-item>
+                </v-stepper-header>
+              </v-stepper>
+
+              <v-card class="my-2 pa-4 card-shadow">
+                <v-card-text>
+                  <v-form ref="form" v-model="formValid">
+                    <div v-if="formStepValue === '2'">
+                      <v-card class="mb-4 card-section">
+                        <v-card-title
+                          class="text-h6 card-title-responsive section-title"
+                        >
+                          <v-icon left color="blue-darken-3" class="mr-2"
+                            >mdi-map-marker</v-icon
+                          >
+                          PROJECT LOCATION
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-row dense>
+                            <v-col cols="12" sm="4">
+                              <div class="input-label">Barangay</div>
+                              <v-select
+                                v-model="barangay"
+                                :items="barangays"
+                                variant="outlined"
+                                density="comfortable"
+                                :rules="[rules.required]"
+                                prepend-inner-icon="mdi-home-group"
+                                color="blue-darken-3"
+                                style="min-height: 50px"
+                              ></v-select>
+                            </v-col>
+                            <v-col cols="12" sm="4">
+                              <div class="input-label">BLK. No.</div>
+                              <v-text-field
+                                v-model="blkNo"
+                                variant="outlined"
+                                density="comfortable"
+                                :rules="[rules.required]"
+                                prepend-inner-icon="mdi-numeric"
+                                color="blue-darken-3"
+                                style="min-height: 50px"
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="4">
+                              <div class="input-label">Street</div>
+                              <v-text-field
+                                v-model="street"
+                                variant="outlined"
+                                density="comfortable"
+                                :rules="[rules.required]"
+                                prepend-inner-icon="mdi-road-variant"
+                                color="blue-darken-3"
+                                style="min-height: 50px"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                      </v-card>
+
+                      <v-card class="mb-4 card-section">
+                        <v-card-title
+                          class="text-h6 card-title-responsive section-title"
+                        >
+                          <v-icon left color="blue-darken-3" class="mr-2"
+                            >mdi-file-document-outline</v-icon
+                          >
+                          LOT INFORMATION
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-row dense>
+                            <v-col cols="12" sm="6">
+                              <div class="input-label">TCT No.</div>
+                              <v-text-field
+                                v-model="tctNo"
+                                variant="outlined"
+                                density="comfortable"
+                                :rules="[rules.required]"
+                                prepend-inner-icon="mdi-numeric"
+                                color="blue-darken-3"
+                                style="min-height: 50px"
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6">
+                              <div class="input-label">Current Tax Dec No.</div>
+                              <v-text-field
+                                v-model="taxDecNo"
+                                variant="outlined"
+                                density="comfortable"
+                                :rules="[rules.required]"
+                                prepend-inner-icon="mdi-numeric"
+                                color="blue-darken-3"
+                                style="min-height: 50px"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                      </v-card>
+
+                      <v-card class="mb-4 card-section">
+                        <v-card-title
+                          class="text-h6 card-title-responsive section-title"
+                        >
+                          <v-icon left color="blue-darken-3" class="mr-2"
+                            >mdi-hammer-wrench</v-icon
+                          >
+                          SCOPE OF WORK
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-row dense>
+                            <v-col cols="12">
+                              <div class="input-label">
+                                Select Scope of Work
+                              </div>
+                              <v-select
+                                v-model="selectedScope"
+                                :items="scopeOfWork"
+                                variant="outlined"
+                                density="comfortable"
+                                multiple
+                                :rules="[rules.requiredScope]"
+                                chips
+                                prepend-inner-icon="mdi-format-list-bulleted"
+                                color="blue-darken-3"
+                                style="min-height: 50px"
+                              ></v-select>
+                            </v-col>
+                            <v-col
+                              v-if="selectedScope.includes('Other (Specify)')"
+                              cols="12"
+                            >
+                              <v-text-field
+                                v-model="otherDetails"
+                                label="Please specify"
+                                variant="outlined"
+                                density="comfortable"
+                                :rules="[rules.requiredOther]"
+                                color="blue-darken-3"
+                                prepend-inner-icon="mdi-pencil"
+                                class="my-1"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                      </v-card>
+                    </div>
+
+                    <v-card
+                      class="mb-4 card-section"
+                      v-if="formStepValue === '3'"
+                    >
+                      <v-card-title
+                        class="text-h6 card-title-responsive section-title"
+                      >
+                        <v-icon left color="blue-darken-3" class="mr-2"
+                          >mdi-domain</v-icon
+                        >
+                        USE OR CHARACTER OF OCCUPANCY
+                      </v-card-title>
+                      <v-divider></v-divider>
+                      <v-card-text>
+                        <v-row dense>
+                          <v-col cols="12" md="6">
+                            <v-select
+                              v-model="selectedGroup"
+                              :items="groups"
+                              label="Groups"
+                              variant="outlined"
+                              prepend-inner-icon="mdi-format-list-bulleted"
+                              color="blue-darken-3"
+                              hide-details
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-select
+                              v-model="selectedCategory"
+                              :items="categories"
+                              label="Category"
+                              variant="outlined"
+                              :disabled="!selectedGroup"
+                              prepend-inner-icon="mdi-shape"
+                              color="blue-darken-3"
+                              hide-details
+                            ></v-select>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                  </v-form>
+                </v-card-text>
+              </v-card>
+
+              <div class="d-flex justify-end mt-6 mb-8">
+                <router-link
+                  to="/applicant/applicantdetails"
+                  style="text-decoration: none"
+                >
+                  <v-btn
+                    color="blue-grey-lighten-4"
+                    class="mr-2 btn-rounded"
+                    elevation="2"
+                    variant="tonal"
+                  >
+                    <v-icon left>mdi-arrow-left</v-icon>Back
+                  </v-btn>
+                </router-link>
+                <v-btn
+                  color="blue-darken-3"
+                  class="btn-rounded"
+                  elevation="2"
+                  @click="nextStep"
+                  variant="elevated"
+                >
+                  Next<v-icon right>mdi-arrow-right</v-icon>
+                </v-btn>
+              </div>
+            </v-container>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
   </v-app>
@@ -326,14 +376,15 @@ import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
-  name: "NagaApplicationForm",
+  name: "BuildingPermitStep2", // Renamed component
   setup() {
     const router = useRouter();
     return { router };
   },
   data() {
     return {
-      currentStep: "2",
+      // --- Data from NagaApplicationForm ---
+      formStepValue: "2", // Renamed from currentStep
       formValid: false,
       formSubmitted: false,
       // Location data
@@ -403,6 +454,7 @@ export default defineComponent({
           return true;
         },
       },
+      // Occupancy data
       selectedGroup: null,
       selectedCategory: null,
       groupCategoryData: {
@@ -444,9 +496,19 @@ export default defineComponent({
           "OTHERS",
         ],
       },
+
+      // --- Data from BuildingPermitNav ---
+      sidebarStep: 0, // Renamed from currentStep
+      sidebarSteps: [
+        // Renamed from steps
+        "Fill up the Unified Application Form",
+        "Upload Building Plans & Lot Plans",
+        "Download Filled-up Unified Application Form and Required Ancillary Permits ",
+      ],
     };
   },
   computed: {
+    // --- Computed from NagaApplicationForm ---
     groups() {
       return Object.keys(this.groupCategoryData);
     },
@@ -457,32 +519,107 @@ export default defineComponent({
     },
   },
   watch: {
+    // --- Watcher from NagaApplicationForm ---
     selectedGroup() {
       this.selectedCategory = null;
     },
   },
   methods: {
+    // --- Method from NagaApplicationForm ---
     async nextStep() {
       let validationPassed = true;
-      if (this.currentStep === "2") {
+      if (this.formStepValue === "2") {
         const { valid } = await this.$refs.form.validate();
         validationPassed = valid;
       }
 
-      if (validationPassed) {
-        const nextStepNumber = parseInt(this.currentStep) + 1;
-        this.currentStep = nextStepNumber.toString();
+      // Add validation logic for other steps if needed
+      // if (this.formStepValue === "3") { ... }
 
+      if (validationPassed) {
+        const nextStepNumber = parseInt(this.formStepValue) + 1;
+
+        // This updates the stepper UI to show progression
+        this.formStepValue = nextStepNumber.toString();
+
+        // Route to the next page component
         if (nextStepNumber === 3) {
+          // This component handles step 2, so we navigate to step 3's route
           this.router.push("/applicant/usecharacterofoccupancy");
         }
+        // Add other routing logic here
+        // if (nextStepNumber === 4) { ... }
       }
+    },
+
+    // --- Methods from BuildingPermitNav ---
+    handleLogout() {
+      console.log("User logged out");
+      // this.$router.push("/login");
+    },
+    goToStep(index) {
+      this.sidebarStep = index;
+      if (index === 0) {
+        console.log("Navigating to step 1 details...");
+        // You could also use router push here
+        this.$router.push("/applicant/applicantdetails");
+      }
+      // Add logic for other steps if needed
     },
   },
 });
 </script>
 
 <style scoped>
+/* --- Styles from BuildingPermitNav --- */
+
+/* Main Layout Styles needed for full height */
+.no-scroll {
+  overflow: hidden !important;
+}
+.v-main.no-scroll {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f6fafd;
+}
+.content-area {
+  flex: 1;
+  overflow-y: auto; /* This makes the content area scrollable */
+}
+.main-content-bg {
+  background: #fafdff; /* BG for the main content column */
+}
+
+/* Sidebar/Quick Guide Styles */
+.quick-guide-card {
+  min-height: 100%;
+  background: #fcfcff;
+  border-right: 1px solid #e0e0e0;
+}
+.quick-guide-step {
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.quick-guide-step:hover {
+  background: #e3f0ff !important;
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.08);
+}
+.active-step {
+  background: #e7efff !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.12);
+}
+.quick-guide-avatar {
+  transition: background 0.2s;
+}
+.step-label {
+  color: #23407c;
+}
+.clickable-step {
+  cursor: pointer;
+}
+
+/* --- Styles from NagaApplicationForm --- */
+
 .gradient-text {
   background: linear-gradient(90deg, #1976d2 20%, #1565c0 80%);
   -webkit-background-clip: text;
@@ -539,6 +676,8 @@ export default defineComponent({
   letter-spacing: 0.02em;
 }
 
+/* --- Combined Media Queries --- */
+
 @media (max-width: 1200px) {
   .page-title-responsive {
     font-size: 1.12rem !important;
@@ -546,8 +685,21 @@ export default defineComponent({
 }
 
 @media (max-width: 960px) {
+  /* This breakpoint (md) is when the sidebar will stack */
   .page-title-responsive {
     font-size: 1rem !important;
+  }
+  .content-area {
+    /* Allow scrolling on mobile when sidebar stacks */
+    overflow-y: auto;
+  }
+  .v-main.no-scroll {
+    /* Allow scrolling on mobile when sidebar stacks */
+    height: auto;
+  }
+  .quick-guide-card {
+    height: auto !important; /* Let sidebar height be auto on mobile */
+    min-height: auto;
   }
 }
 
@@ -574,6 +726,13 @@ export default defineComponent({
   .card-shadow,
   .card-section {
     padding: 6px !important;
+  }
+  .step-label {
+    font-size: 1rem !important;
+  }
+  /* Adjust padding for main content on mobile */
+  .main-content-bg {
+    padding: 12px !important;
   }
 }
 

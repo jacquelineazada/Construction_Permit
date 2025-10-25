@@ -1,9 +1,11 @@
 <template>
   <div class="page-wrapper">
     <v-main>
-      <v-container class="fill-height pa-8" fluid>
+      <v-container
+        class="fill-height pa-8 d-flex align-center justify-center"
+        fluid
+      >
         <v-row align="center" justify="center" class="w-100">
-          <!-- INFO SECTION -->
           <v-col cols="12" md="7" class="pa-6">
             <div class="info-section elevation-2">
               <h2 class="info-title gradient-info-title">
@@ -47,7 +49,6 @@
             </div>
           </v-col>
 
-          <!-- LOGIN CARD -->
           <v-col cols="12" md="4" class="pa-6">
             <v-card class="login-card pa-7 elevation-8">
               <v-card-title
@@ -102,7 +103,7 @@
                     color="primary"
                     size="large"
                     class="login-btn gradient-btn"
-                    to="/applicant/buildingpermitportal"
+                    to="/applicant/applicantdetails"
                   >
                     Login
                   </v-btn>
@@ -145,11 +146,15 @@ export default {
 </script>
 
 <style scoped>
+/* Page Wrapper - Keep as is */
 .page-wrapper {
   background: linear-gradient(120deg, #f7f8fa 60%, #e6f0fa 100%);
   min-height: 100vh;
 }
 
+/* --- */
+
+/* INFO SECTION STYLES - Kept as is for other styling */
 .info-section {
   padding: 2.2rem 2.2rem 1.7rem 2.2rem;
   background: #ffffff;
@@ -210,7 +215,9 @@ export default {
   margin-bottom: 0;
 }
 
-/* Login Card */
+/* --- */
+
+/* Login Card STYLES - Kept as is for other styling */
 .login-card {
   border-radius: 22px !important;
   box-shadow: 0 8px 40px rgba(33, 150, 243, 0.12) !important;
@@ -254,6 +261,9 @@ a {
   text-decoration: none;
 }
 
+/* --- */
+
+/* MEDIA QUERIES - Kept as is */
 @media (max-width: 1200px) {
   .info-section {
     padding: 1.2rem;

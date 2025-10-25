@@ -1,9 +1,45 @@
 <template>
   <v-app>
     <v-app-bar flat color="#0000CC" dark height="88" app class="elevation-4">
-      <div class="d-flex align-center h-100 px-6"></div>
+      <v-container
+        fluid
+        class="d-flex align-center justify-space-between py-0"
+        style="max-width: 100%"
+      >
+        <div class="d-flex align-center">
+          <v-img
+            src="https://www2.naga.gov.ph/wp-content/uploads/2022/05/Naga_City_Official_Seal-1.png"
+            alt="LGU Seal"
+            width="85"
+            height="75"
+            contain
+            class="me-4"
+          />
+          <div>
+            <div
+              style="
+                font-size: 12px;
+                font-weight: 400;
+                color: white;
+                line-height: 1.2;
+              "
+            >
+              REPUBLIC OF THE PHILIPPINES
+            </div>
+            <div
+              style="
+                font-size: 15px;
+                font-weight: 700;
+                color: white;
+                line-height: 1.2;
+              "
+            >
+              CITY GOVERNMENT OF NAGA
+            </div>
+          </div>
+        </div>
+      </v-container>
     </v-app-bar>
-
     <v-main class="bg-grey-lighten-4">
       <v-card
         flat
@@ -23,105 +59,70 @@
           </h2>
         </div>
         <div class="d-flex align-center">
-          <v-menu :close-on-content-click="false" location="bottom end">
+          <v-menu location="bottom end">
             <template v-slot:activator="{ props }">
-              <v-badge
-                color="red"
-                :content="unreadNotificationsCount"
-                overlap
-                class="me-4 cursor-pointer"
-                v-bind="props"
-              >
-                <v-icon size="22">mdi-bell</v-icon>
-              </v-badge>
+              <v-btn v-bind="props" text class="profile-btn pa-2 rounded-lg">
+                <v-avatar size="36" class="mx-2">
+                  <v-img
+                    :src="mockEvaluatorProfile.avatar"
+                    alt="User Avatar"
+                  ></v-img>
+                </v-avatar>
+
+                <div class="d-flex flex-column text-left">
+                  <span
+                    class="text-body-2 font-weight-bold"
+                    style="color: #333; white-space: nowrap"
+                  >
+                    {{ mockEvaluatorProfile.name }}
+                  </span>
+                  <span
+                    class="text-caption font-weight-medium"
+                    style="color: #888; white-space: nowrap"
+                  >
+                    {{ mockEvaluatorProfile.title }}
+                  </span>
+                </div>
+              </v-btn>
             </template>
-            <v-card min-width="320" max-width="400" class="rounded-lg">
-              <v-card-title
-                class="d-flex justify-space-between align-center text-subtitle-1 font-weight-bold py-3"
-              >
-                <span>Applications to Evaluate</span>
-                <v-btn
-                  icon
-                  size="small"
-                  variant="text"
-                  @click="closeNotifications"
-                >
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-list dense>
-                <v-list-item
-                  v-for="(application, index) in filteredApplicationsToEvaluate"
-                  :key="index"
-                  class="py-2"
-                >
+
+            <v-card min-width="220" class="rounded-lg elevation-2">
+              <v-list dense class="py-0">
+                <v-list-item class="pa-3">
                   <template v-slot:prepend>
-                    <v-avatar
-                      size="40"
-                      :color="getAvatarColor(application.initials)"
-                      class="font-weight-bold text-white"
-                      >{{ application.initials }}</v-avatar
-                    >
+                    <v-avatar size="40">
+                      <v-img
+                        :src="mockEvaluatorProfile.avatar"
+                        alt="User Avatar"
+                      ></v-img>
+                    </v-avatar>
                   </template>
-                  <v-list-item-title class="font-weight-bold text-body-2">
-                    {{ application.name }}
+                  <v-list-item-title
+                    class="font-weight-bold"
+                    style="line-height: 1.2rem"
+                  >
+                    {{ mockEvaluatorProfile.name }}
                   </v-list-item-title>
-                  <v-list-item-subtitle class="text-caption">
-                    {{ application.applicationId }}
+                  <v-list-item-subtitle style="line-height: 1rem">
+                    {{ mockEvaluatorProfile.title }}
                   </v-list-item-subtitle>
-                  <v-list-item-subtitle class="text-caption mt-1 text-wrap">
-                    {{ application.message }}
-                  </v-list-item-subtitle>
-                  <v-list-item-subtitle class="text-caption mt-1 text-grey">
-                    {{ application.time }}
-                  </v-list-item-subtitle>
-                  <template v-slot:append>
-                    <v-chip
-                      :color="getStatusColor(application.status)"
-                      size="small"
-                      label
-                      class="font-weight-bold text-uppercase"
-                      >{{ application.status }}</v-chip
-                    >
+                </v-list-item>
+
+                <v-list-item link to="/profile" class="mt-1">
+                  <template v-slot:prepend>
+                    <v-icon>mdi-account</v-icon>
                   </template>
+                  <v-list-item-title>Profile</v-list-item-title>
+                </v-list-item>
+                <v-list-item link @click="logout">
+                  <template v-slot:prepend>
+                    <v-icon>mdi-logout</v-icon>
+                  </template>
+                  <v-list-item-title>Logout</v-list-item-title>
                 </v-list-item>
               </v-list>
-              <v-divider></v-divider>
-              <v-card-actions class="d-flex justify-center">
-                <v-btn
-                  variant="text"
-                  color="blue"
-                  to="/building-permit"
-                  class="text-none font-weight-bold"
-                  >View All Applications</v-btn
-                >
-              </v-card-actions>
             </v-card>
           </v-menu>
-
-          <v-btn text to="/profile" class="profile-btn pa-2 rounded-lg">
-            <v-avatar size="36" class="mx-2">
-              <v-img
-                alt="Alyssa C. Alvarez"
-                :src="mockEvaluatorProfile.image"
-              ></v-img>
-            </v-avatar>
-            <div class="d-flex flex-column text-left">
-              <span
-                class="text-body-2 font-weight-bold"
-                style="color: #333; white-space: nowrap"
-              >
-                {{ mockEvaluatorProfile.name }}
-              </span>
-              <span
-                class="text-caption font-weight-medium"
-                style="color: #888; white-space: nowrap"
-              >
-                {{ mockEvaluatorProfile.title }}
-              </span>
-            </div>
-          </v-btn>
         </div>
       </v-card>
 
@@ -129,32 +130,28 @@
         <v-row class="mb-8" style="gap: 16px 0">
           <v-col cols="12" sm="6" md="3">
             <v-card
-              color="#007bff"
               @click="filterByStatus('Total')"
-              class="text-white elevation-4 rounded-lg cursor-pointer"
+              class="elevation-2 rounded-lg cursor-pointer"
             >
               <v-card-text
                 class="d-flex align-center justify-space-between py-4"
               >
                 <div>
                   <div class="text-subtitle-1 font-weight-bold">
-                    Total Applicants ({{ mockEvaluatorProfile.specialty }})
+                    Total Applicants
                   </div>
                   <div class="text-h4 font-weight-bold mt-1">
                     {{ totalApplicants }}
                   </div>
                 </div>
-                <v-icon size="48" color="white" class="opacity-75"
-                  >mdi-account-group</v-icon
-                >
+                <v-icon size="48" color="#007bff">mdi-account-group</v-icon>
               </v-card-text>
             </v-card>
           </v-col>
           <v-col cols="12" sm="6" md="3">
             <v-card
-              color="#ffc107"
               @click="filterByStatus('Pending')"
-              class="text-white elevation-4 rounded-lg cursor-pointer"
+              class="elevation-2 rounded-lg cursor-pointer"
             >
               <v-card-text
                 class="d-flex align-center justify-space-between py-4"
@@ -165,17 +162,14 @@
                     {{ pendingApplicants }}
                   </div>
                 </div>
-                <v-icon size="48" color="white" class="opacity-75"
-                  >mdi-clock-outline</v-icon
-                >
+                <v-icon size="48" color="#ffc107">mdi-clock-outline</v-icon>
               </v-card-text>
             </v-card>
           </v-col>
           <v-col cols="12" sm="6" md="3">
             <v-card
-              color="#28a745"
               @click="filterByStatus('Verified')"
-              class="text-white elevation-4 rounded-lg cursor-pointer"
+              class="elevation-2 rounded-lg cursor-pointer"
             >
               <v-card-text
                 class="d-flex align-center justify-space-between py-4"
@@ -186,7 +180,7 @@
                     {{ verifiedApplicants }}
                   </div>
                 </div>
-                <v-icon size="48" color="white" class="opacity-75"
+                <v-icon size="48" color="#28a745"
                   >mdi-check-circle-outline</v-icon
                 >
               </v-card-text>
@@ -194,9 +188,8 @@
           </v-col>
           <v-col cols="12" sm="6" md="3">
             <v-card
-              color="#dc3545"
               @click="filterByStatus('Return')"
-              class="text-white elevation-4 rounded-lg cursor-pointer"
+              class="elevation-2 rounded-lg cursor-pointer"
             >
               <v-card-text
                 class="d-flex align-center justify-space-between py-4"
@@ -207,7 +200,7 @@
                     {{ returnApplicants }}
                   </div>
                 </div>
-                <v-icon size="48" color="white" class="opacity-75"
+                <v-icon size="48" color="#dc3545"
                   >mdi-alert-circle-outline</v-icon
                 >
               </v-card-text>
@@ -219,10 +212,9 @@
           <v-col cols="12" sm="8" md="6">
             <v-text-field
               v-model="search"
-              :label="`Search ${mockEvaluatorProfile.specialty} applicants... (Status: ${activeFilter})`"
+              placeholder="Search applicants..."
               prepend-inner-icon="mdi-magnify"
-              density="comfortable"
-              variant="outlined"
+              variant="solo"
               hide-details
               single-line
               class="rounded-lg"
@@ -268,7 +260,7 @@
                 <th
                   v-for="header in headers"
                   :key="header.key"
-                  class="text-left font-weight-bold text-caption text-uppercase px-4"
+                  class="text-left font-weight-bold text-caption px-4"
                   :style="{ width: header.key === 'action' ? '120px' : '' }"
                 >
                   {{ header.title }}
@@ -281,7 +273,7 @@
                 :key="item.applicationNumber"
                 class="data-table-row"
               >
-                <td class="text-left py-3 px-4">
+                <td class="text-left py-4 px-4">
                   <div class="d-flex align-center">
                     <v-avatar
                       size="36"
@@ -307,10 +299,10 @@
                 <td class="text-left px-4">
                   <v-chip
                     :color="getStatusColor(item.status)"
-                    dark
+                    variant="tonal"
                     size="small"
                     label
-                    class="font-weight-bold text-uppercase"
+                    class="font-weight-bold"
                   >
                     {{ item.status }}
                   </v-chip>
@@ -340,293 +332,40 @@
         </v-card>
       </div>
     </v-main>
-
-    <v-dialog v-model="isEvaluationModalVisible" max-width="1400">
-      <v-card class="pa-6 rounded-xl">
-        <v-card-title class="d-flex align-center justify-space-between pb-2">
-          <div class="text-h5 font-weight-bold text-blue-darken-2">
-            Document Evaluation:
-            {{ currentEvaluationPlan.name || "Plan Details" }}
-          </div>
-          <v-btn
-            icon
-            size="small"
-            variant="text"
-            @click="isEvaluationModalVisible = false"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-text class="pt-4">
-          <v-row>
-            <v-col cols="12" md="9">
-              <div class="text-subtitle-1 font-weight-bold mb-2">
-                {{ selectedApplicant.projectName }}
-                <span class="text-caption font-weight-regular text-grey"
-                  >({{ selectedApplicant.applicationNumber }})</span
-                >
-              </div>
-
-              <div
-                class="pa-2 rounded-lg border"
-                style="background-color: #f5f5f5"
-              >
-                <v-img
-                  :src="mockPlanImage"
-                  contain
-                  class="rounded-lg"
-                  style="max-height: 80vh"
-                ></v-img>
-              </div>
-              <div class="text-caption text-center pt-2 text-grey-darken-1">
-                Plan View - Click to zoom/annotate.
-              </div>
-            </v-col>
-
-            <v-col cols="12" md="3">
-              <v-form @submit.prevent="submitEvaluation">
-                <div class="mb-4">
-                  <div class="text-subtitle-1 font-weight-bold mb-2">
-                    {{ mockEvaluatorProfile.specialty }} Requirements Checklist
-                  </div>
-                  <v-divider class="mb-3"></v-divider>
-                  <div v-for="(req, index) in currentRequirements" :key="index">
-                    <div class="d-flex align-center">
-                      <v-checkbox
-                        v-model="evaluationData.requirements"
-                        :label="req.label"
-                        :value="req.value"
-                        density="compact"
-                        hide-details
-                        class="flex-grow-1"
-                        color="blue"
-                      ></v-checkbox>
-                      <v-btn
-                        icon
-                        size="x-small"
-                        variant="text"
-                        :color="
-                          evaluationData.commentsByRequirement[req.value] !==
-                          undefined
-                            ? 'red'
-                            : 'grey-lighten-1'
-                        "
-                        @click="showCommentField(req.value)"
-                        class="ms-2"
-                      >
-                        <v-icon size="18">mdi-comment-alert</v-icon>
-                      </v-btn>
-                    </div>
-                    <v-textarea
-                      v-if="
-                        evaluationData.commentsByRequirement[req.value] !==
-                        undefined
-                      "
-                      v-model="evaluationData.commentsByRequirement[req.value]"
-                      placeholder="Add non-compliance comment..."
-                      variant="outlined"
-                      rows="2"
-                      class="mt-1 mb-2"
-                      hide-details
-                      density="compact"
-                    ></v-textarea>
-                  </div>
-                </div>
-
-                <div class="mb-4">
-                  <div class="text-subtitle-1 font-weight-bold mb-2">
-                    General Comments/Feedback
-                  </div>
-                  <v-textarea
-                    v-model="evaluationData.comments"
-                    placeholder="General summary or additional feedback..."
-                    variant="outlined"
-                    rows="3"
-                    hide-details
-                  ></v-textarea>
-                </div>
-
-                <div class="mb-4">
-                  <div class="text-subtitle-1 font-weight-bold mb-2">
-                    Assessment Status
-                  </div>
-                  <v-radio-group
-                    v-model="evaluationData.status"
-                    hide-details
-                    color="blue"
-                    class="mt-1"
-                  >
-                    <v-radio label="Approved" value="Approved"></v-radio>
-                    <v-radio label="For Revision" value="Return"></v-radio>
-                  </v-radio-group>
-                </div>
-
-                <v-card
-                  variant="flat"
-                  color="white"
-                  class="pa-3 mb-4 elevation-1"
-                >
-                  <div class="text-subtitle-1 font-weight-bold mb-2">
-                    Fee Summary
-                  </div>
-                  <div class="d-flex flex-column" style="gap: 4px">
-                    <div class="d-flex justify-space-between">
-                      <div class="text-caption text-grey-darken-2">
-                        Architectural Plan Review
-                      </div>
-                      <div class="text-caption font-weight-medium">₱500.00</div>
-                    </div>
-                    <div class="d-flex justify-space-between">
-                      <div class="text-caption text-grey-darken-2">
-                        Processing Fee
-                      </div>
-                      <div class="text-caption font-weight-medium">
-                        ₱2,500.00
-                      </div>
-                    </div>
-                    <v-divider class="my-1"></v-divider>
-                    <div
-                      class="d-flex justify-space-between font-weight-bold text-blue-darken-2"
-                    >
-                      <div class="text-body-2">Total Amount Due</div>
-                      <div class="text-body-2">₱3,000.00</div>
-                    </div>
-                  </div>
-                </v-card>
-
-                <v-btn
-                  type="submit"
-                  color="blue"
-                  variant="elevated"
-                  block
-                  size="large"
-                  class="mt-4 text-none font-weight-bold"
-                  >Submit Evaluation</v-btn
-                >
-              </v-form>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </v-app>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 
-// --- STATE MANAGEMENT ---
-const fileInput = ref(null);
 const search = ref("");
 const activeFilter = ref("All");
 const loading = ref(false);
+const router = useRouter();
 
-// Modal State
-const isEvaluationModalVisible = ref(false);
-const selectedApplicant = ref({}); // Holds the detailed data for the currently selected applicant
-const currentEvaluationPlan = ref({}); // Holds the details of the specific plan being reviewed
-const evaluationData = ref({
-  requirements: [],
-  comments: "",
-  commentsByRequirement: {},
-  status: "",
-});
-
-// --- MOCK USER PROFILE (Key Addition for Discipline-Specific Filtering) ---
 const mockEvaluatorProfile = ref({
-  name: "Alyssa C. Alvarez",
+  name: "Zoe Lumanta",
   title: "Architect",
-  specialty: "Architectural", // <--- THIS VALUE CONTROLS WHAT THE USER SEES
-  image: "https://cdn.vuetifyjs.com/images/john.jpg",
+  specialty: "Architectural",
+  initials: "ZL",
+  avatar: "https://cdn.vuetifyjs.com/images/john.jpg",
 });
 
-// --- DYNAMIC EVALUATION CONTENT (Based on Discipline) ---
-const mockPlanImage = ref(
-  "https://placehold.co/1000x800/e0e0e0/000000?text=Plan+View+Placeholder"
-);
-
-// Discipline-specific checklists
-const evaluationChecklists = ref({
-  Architectural: [
-    { label: "Complete Plan Set (1:100 scale)", value: "complete_plan_set" },
-    { label: "Site Plan showing setbacks and site lines", value: "site_plan" },
-    { label: "Floor Plans showing all Rooms", value: "floor_plans" },
-    { label: "All Elevations", value: "all_elevations" },
-    { label: "Sections showing all Floors", value: "all_sections" },
-    { label: "Details (Stair sections/Ramp etc.)", value: "details" },
-  ],
-  Electrical: [
-    { label: "Load Computation & Legend", value: "load_computation" },
-    { label: "Riser Diagram & One-Line Layout", value: "riser_diagram" },
-    { label: "Power and Lighting Layout", value: "power_layout" },
-    { label: "Location of Service Equipment", value: "service_location" },
-  ],
-  Structural: [
-    { label: "Foundation Plan & Details", value: "foundation_plan" },
-    { label: "Column and Beam Schedules", value: "column_schedule" },
-    { label: "Roof Framing Plan", value: "roof_framing" },
-    { label: "Structural Computations (Stamped)", value: "computations" },
-  ],
-});
-
-const currentRequirements = computed(() => {
-  // Dynamically select the checklist based on the evaluator's specialty
-  return evaluationChecklists.value[mockEvaluatorProfile.value.specialty] || [];
-});
-
-// --- MOCK DATA ---
-// Added a 'discipline' field to identify the type of plan/evaluation needed
-const applicationsToEvaluate = ref([
-  {
-    name: "Jin Degusman",
-    initials: "JD",
-    applicationId: "BP-2024-000123-T",
-    message: "Building permit application requires architectural evaluation",
-    time: "2 days ago",
-    status: "Pending",
-    read: false,
-    discipline: "Architectural", // Filter key
-  },
-  {
-    name: "David Tolo...",
-    initials: "DT",
-    applicationId: "BP-2024-000567-T",
-    message: "Building permit application requires structural review",
-    time: "3 days ago",
-    status: "Pending",
-    read: false,
-    discipline: "Structural", // Filter key
-  },
-  {
-    name: "Jennifer Nayda",
-    initials: "JN",
-    applicationId: "BP-2024-000910-T",
-    message: "Missing mandatory site plan documentation",
-    time: "4 days ago",
-    status: "Return",
-    read: false,
-    discipline: "Architectural", // Filter key
-  },
-  {
-    name: "Carl L",
-    initials: "CL",
-    applicationId: "BP-2024-000155-T",
-    message: "Electrical permit review required.",
-    time: "4 days ago",
-    status: "Pending",
-    read: false,
-    discipline: "Electrical", // Filter key
-  },
-]);
-
-// Combined data structure for the list view (Applicants) and detailed view (applicantsDetailed)
-// Added a 'discipline' field for filtering
 const applicants = ref([
   {
     initials: "JM",
     name: "Jm Deguzman",
     applicationNumber: "BP-2024-808123-T",
     dateSubmitted: "Jan 15, 2024",
+    status: "Verified",
+    discipline: "Architectural",
+  },
+  {
+    initials: "SG",
+    name: "Sarah Geronimo",
+    applicationNumber: "BP-2024-808234-T",
+    dateSubmitted: "Jan 16, 2024",
     status: "Verified",
     discipline: "Architectural",
   },
@@ -660,45 +399,7 @@ const applicants = ref([
     applicationNumber: "BP-2024-808999-T",
     dateSubmitted: "Jan 25, 2024",
     status: "Verified",
-    discipline: "Electrical",
-  },
-]);
-
-// Detailed data used for the Evaluation Modal
-const applicantsDetailed = ref([
-  {
-    applicationNumber: "BP-2024-808123-T",
-    projectName: "Commercial Building Project",
-    applicantName: "Jm Deguzman",
-    documents: [
-      { name: "Architectural Plan - Ground Floor", size: 2.5, type: "Arch" },
-      { name: "Structural Plan - Footings", size: 1.2, type: "Struc" },
-    ],
-    // ... other detailed properties (fee, timeline, etc.)
-  },
-  {
-    applicationNumber: "BP-2024-808345-T",
-    projectName: "Residential House Renovation",
-    applicantName: "Michael Padilla",
-    documents: [{ name: "Site Development Plan", size: 0.8, type: "Site" }],
-  },
-  {
-    applicationNumber: "BP-2024-808678-T",
-    projectName: "Office Expansion",
-    applicantName: "David Tolo",
-    documents: [{ name: "Structural Layout Plan", size: 1.5, type: "Struc" }],
-  },
-  {
-    applicationNumber: "BP-2024-808890-T",
-    projectName: "Factory Wiring Upgrade",
-    applicantName: "Sarah Gomez",
-    documents: [{ name: "Electrical Layout Plan", size: 1.5, type: "Elec" }],
-  },
-  {
-    applicationNumber: "BP-2024-808999-T",
-    projectName: "Warehouse Lighting",
-    applicantName: "Robert Jimenez",
-    documents: [{ name: "Electrical Layout Plan", size: 1.5, type: "Elec" }],
+    discipline: "Architectural",
   },
 ]);
 
@@ -711,26 +412,11 @@ const headers = [
 ];
 
 // --- COMPUTED PROPERTIES ---
-
-// Filter notifications to only show those relevant to the evaluator's specialty
-const filteredApplicationsToEvaluate = computed(() => {
-  return applicationsToEvaluate.value.filter(
-    (app) => app.discipline === mockEvaluatorProfile.value.specialty
-  );
-});
-
-const unreadNotificationsCount = computed(() => {
-  return filteredApplicationsToEvaluate.value.filter((n) => !n.read).length;
-});
-
-// Filter the main applicant list based on the evaluator's discipline
 const relevantApplicants = computed(() => {
   return applicants.value.filter(
     (a) => a.discipline === mockEvaluatorProfile.value.specialty
   );
 });
-
-// Metrics use the discipline-filtered list
 const totalApplicants = computed(() => relevantApplicants.value.length);
 const pendingApplicants = computed(
   () => relevantApplicants.value.filter((a) => a.status === "Pending").length
@@ -743,8 +429,7 @@ const returnApplicants = computed(
 );
 
 const filteredApplicants = computed(() => {
-  let filtered = relevantApplicants.value; // Start with discipline-filtered list
-
+  let filtered = relevantApplicants.value;
   if (search.value) {
     const searchTerm = search.value.toLowerCase();
     filtered = filtered.filter(
@@ -753,7 +438,6 @@ const filteredApplicants = computed(() => {
         applicant.applicationNumber.toLowerCase().includes(searchTerm)
     );
   }
-
   if (activeFilter.value !== "All" && activeFilter.value !== "Total") {
     filtered = filtered.filter(
       (applicant) => applicant.status === activeFilter.value
@@ -763,38 +447,27 @@ const filteredApplicants = computed(() => {
 });
 
 // --- METHODS ---
-
 function onClick() {
   loading.value = true;
   setTimeout(() => {
     loading.value = false;
   }, 2000);
 }
-
-const closeNotifications = () => {
-  // Only mark the *filtered* notifications as read for simplicity
-  filteredApplicationsToEvaluate.value.forEach((notification) => {
-    notification.read = true;
-  });
-};
-
 const getStatusColor = (status) => {
-  if (status === "Verified") return "#28a745"; // Green
-  if (status === "Pending") return "#ffc107"; // Orange/Yellow
-  if (status === "Return") return "#dc3545"; // Red
-  if (status === "Approved") return "#007bff"; // Blue (For evaluation modal status)
+  if (status === "Verified") return "success";
+  if (status === "Pending") return "warning";
+  if (status === "Return") return "error";
+  if (status === "Approved") return "primary";
   return "grey";
 };
-
 const stringToHslColor = (str, s, l) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
   const h = hash % 360;
-  return "hsl(" + h + ", " + s + "%, " + l + "%)";
+  return `hsl(${h}, ${s}%, ${l}%)`;
 };
-
 const getAvatarColor = (initials) => {
   const definedColors = {
     JD: "#007bff",
@@ -805,116 +478,26 @@ const getAvatarColor = (initials) => {
     MP: "#dc3545",
     CL: "#ffc107",
     RJ: "#9c27b0",
+    ZL: "#00CCCC",
   };
-
-  if (definedColors[initials]) {
-    return definedColors[initials];
-  }
-
-  return stringToHslColor(initials, 60, 40);
+  return definedColors[initials] || stringToHslColor(initials, 60, 40);
 };
-
 const filterByStatus = (status) => {
-  if (status === "Total") {
-    activeFilter.value = "All";
-  } else {
-    activeFilter.value = status;
-  }
+  activeFilter.value = status === "Total" ? "All" : status;
 };
 
-const viewDetails = (item) => {
-  // 1. Find the detailed applicant data
-  const detail = applicantsDetailed.value.find(
-    (a) => a.applicationNumber === item.applicationNumber
-  );
-
-  if (!detail) {
-    console.error("Detailed applicant data not found:", item.applicationNumber);
-    return;
-  }
-
-  // Combine list data and detail data
-  selectedApplicant.value = { ...item, ...detail };
-
-  // 2. Set the current plan to review (e.g., the first document)
-  if (
-    selectedApplicant.value.documents &&
-    selectedApplicant.value.documents.length > 0
-  ) {
-    // Find the first document that roughly matches the evaluator's specialty
-    const specialtyAbbreviation = mockEvaluatorProfile.value.specialty
-      .substring(0, 4)
-      .toLowerCase();
-
-    currentEvaluationPlan.value =
-      selectedApplicant.value.documents.find((doc) =>
-        doc.type.toLowerCase().includes(specialtyAbbreviation)
-      ) || selectedApplicant.value.documents[0];
-  } else {
-    currentEvaluationPlan.value = { name: "No Documents Submitted" };
-  }
-
-  // Reset evaluation form state to unselected/empty
-  evaluationData.value = {
-    requirements: [],
-    comments: "",
-    commentsByRequirement: {},
-    status: "",
-  };
-
-  // 3. Open the modal
-  isEvaluationModalVisible.value = true;
+const logout = () => {
+  console.log("User logging out...");
+  router.push("/login");
 };
 
-const showCommentField = (requirementValue) => {
-  const isCommentFieldVisible =
-    evaluationData.value.commentsByRequirement[requirementValue] !== undefined;
-
-  if (isCommentFieldVisible) {
-    // If visible, hide it (delete comment) AND check the box (assuming requirement is met by default if no comment)
-    delete evaluationData.value.commentsByRequirement[requirementValue];
-    if (!evaluationData.value.requirements.includes(requirementValue)) {
-      evaluationData.value.requirements.push(requirementValue);
-    }
-  } else {
-    // If hidden, show it (initialize comment) AND uncheck the box (implying non-compliance)
-    evaluationData.value.commentsByRequirement[requirementValue] = "";
-    const index = evaluationData.value.requirements.indexOf(requirementValue);
-    if (index > -1) {
-      evaluationData.value.requirements.splice(index, 1);
-    }
-  }
-};
-
-const submitEvaluation = () => {
-  console.log("Evaluation Submitted:", evaluationData.value);
-
-  // Mock Update: Find the applicant in the list view and update their status
-  const applicantInList = applicants.value.find(
-    (a) => a.applicationNumber === selectedApplicant.value.applicationNumber
-  );
-
-  if (applicantInList && evaluationData.value.status) {
-    // Update the status on the main table
-    applicantInList.status = evaluationData.value.status;
-  }
-
-  isEvaluationModalVisible.value = false;
-  // Reset the form data
-  evaluationData.value = {
-    requirements: [],
-    comments: "",
-    commentsByRequirement: {},
-    status: "",
-  };
+const viewDetails = () => {
+  router.push("/admin/evaluation");
 };
 </script>
 
 <style scoped>
-/* Scoped styles for aesthetic enhancements */
-
 .profile-btn {
-  /* Ensuring the button is invisible but clickable/hoverable */
   background-color: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
@@ -926,24 +509,40 @@ const submitEvaluation = () => {
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Custom Data Table Styling */
+.custom-data-table {
+  border-collapse: collapse;
+}
+
 .custom-data-table th {
-  background-color: #f0f0f0 !important; /* Lighter header background */
-  color: #616161 !important;
+  background-color: white !important;
+  color: #333 !important;
   border-bottom: 1px solid #e0e0e0 !important;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  text-transform: none !important;
+  font-size: 0.8rem !important;
 }
 
 .data-table-row {
   transition: background-color 0.15s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+.data-table-row:last-child {
+  border-bottom: none;
 }
 
 .data-table-row:hover {
-  background-color: #f5f5f5 !important;
+  background-color: #f5f5ff !important;
 }
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+/* ADDED FROM YOUR NEW CODE */
+.nav-links .v-btn {
+  text-transform: none !important;
+  font-weight: 600;
+  font-size: 16px;
 }
 </style>

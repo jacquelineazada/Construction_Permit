@@ -1,7 +1,5 @@
 <template>
   <v-app>
-    <v-app-bar flat color="blue-darken-3" dark height="88" app> </v-app-bar>
-
     <v-main class="bg-grey-lighten-4">
       <v-card
         flat
@@ -1070,6 +1068,7 @@
                   </div>
                 </div>
 
+                <!-- Updated BOX 3 and BOX 4: use a single bordered container so the "table" closes like BOX 2 -->
                 <div class="box-wrapper">
                   <div class="box-labels-3-4">
                     <p class="box-label-outside text-caption font-weight-bold">
@@ -1079,73 +1078,74 @@
                       BOX 4
                     </p>
                   </div>
-                  <div class="box-3-4-wrapper">
-                    <div class="box-container box-3">
-                      <div class="box-content-col">
-                        <div class="signature-address-section">
-                          <p class="text-caption font-weight-bold title">
-                            APPLICANT:
-                          </p>
-                          <div class="signature-group-3-4">
-                            <div class="main-signature">
-                              <div class="underline-box"></div>
-                              <div class="signature-label text-center">
-                                (Signature Over Printed Name)
-                              </div>
-                            </div>
-                            <div class="field-group date-signature">
-                              <span class="text-caption">Date</span>
-                              <span class="underline"></span>
+
+                  <!-- single container for both BOX 3 and BOX 4; this ensures a single border (closed table) -->
+                  <div class="box-container box-3-4">
+                    <div class="box-3-col box-content-col">
+                      <div class="signature-address-section">
+                        <p class="text-caption font-weight-bold title">
+                          APPLICANT:
+                        </p>
+                        <div class="signature-group-3-4">
+                          <div class="main-signature">
+                            <div class="underline-box"></div>
+                            <div class="signature-label text-center">
+                              (Signature Over Printed Name)
                             </div>
                           </div>
-                          <div class="address-field-3-4">
-                            <span class="text-caption">Address</span>
+                          <div class="field-group date-signature">
+                            <span class="text-caption">Date</span>
+                            <span class="underline short"></span>
                           </div>
                         </div>
-                        <div class="id-row">
-                          <div class="id-field">
-                            <span>Gov't Issued ID No.</span>
-                          </div>
-                          <div class="id-field"><span>Date Issued</span></div>
-                          <div class="id-field"><span>Place Issued</span></div>
+                        <div class="address-field-3-4">
+                          <span class="text-caption">Address</span>
                         </div>
                       </div>
+
+                      <div class="id-row boxed-id-row">
+                        <div class="id-field">
+                          <span>Gov't Issued ID No.</span>
+                        </div>
+                        <div class="id-field"><span>Date Issued</span></div>
+                        <div class="id-field"><span>Place Issued</span></div>
+                      </div>
                     </div>
-                    <div class="box-container box-4">
-                      <div class="box-content-col">
-                        <div class="signature-address-section">
-                          <p class="text-caption font-weight-bold title">
-                            WITH MY CONSENT: LOT OWNER / AUTHORIZED
-                            REPRESENTATIVE
-                          </p>
-                          <div class="signature-group-3-4">
-                            <div class="main-signature">
-                              <div class="underline-box"></div>
-                              <div class="signature-label text-center">
-                                (Signature Over Printed Name)
-                              </div>
-                            </div>
-                            <div class="field-group date-signature">
-                              <span class="text-caption">Date</span>
-                              <span class="underline"></span>
+
+                    <div class="box-4-col box-content-col">
+                      <div class="signature-address-section">
+                        <p class="text-caption font-weight-bold title">
+                          WITH MY CONSENT: LOT OWNER / AUTHORIZED REPRESENTATIVE
+                        </p>
+                        <div class="signature-group-3-4">
+                          <div class="main-signature">
+                            <div class="underline-box"></div>
+                            <div class="signature-label text-center">
+                              (Signature Over Printed Name)
                             </div>
                           </div>
-                          <div class="address-field-3-4">
-                            <span class="text-caption">Address</span>
+                          <div class="field-group date-signature">
+                            <span class="text-caption">Date</span>
+                            <span class="underline short"></span>
                           </div>
                         </div>
-                        <div class="id-row">
-                          <div class="id-field">
-                            <span>Gov't Issued ID No.</span>
-                          </div>
-                          <div class="id-field"><span>Date Issued</span></div>
-                          <div class="id-field"><span>Place Issued</span></div>
+                        <div class="address-field-3-4">
+                          <span class="text-caption">Address</span>
                         </div>
+                      </div>
+
+                      <div class="id-row boxed-id-row">
+                        <div class="id-field">
+                          <span>Gov't Issued ID No.</span>
+                        </div>
+                        <div class="id-field"><span>Date Issued</span></div>
+                        <div class="id-field"><span>Place Issued</span></div>
                       </div>
                     </div>
                   </div>
                 </div>
 
+                <!-- BOX 5: ensure outer container stays closed and internal rows show full-width separators -->
                 <div class="box-wrapper">
                   <p class="box-label-outside text-caption font-weight-bold">
                     BOX 5
@@ -1172,7 +1172,7 @@
                             >
                           </div>
                         </div>
-                        <div class="id-row-notary">
+                        <div class="id-row-notary boxed-id-row">
                           <div class="signature-line-group">
                             <div class="underline-box"></div>
                             <div class="signature-label text-center">
@@ -1205,7 +1205,7 @@
                             >
                           </div>
                         </div>
-                        <div class="id-row-notary">
+                        <div class="id-row-notary boxed-id-row">
                           <div class="signature-line-group">
                             <div class="underline-box"></div>
                             <div class="signature-label text-center">
@@ -1265,6 +1265,7 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="form-footer">
                   <div class="footer-copies">
                     <span>Copy 1: Owner</span>
@@ -1842,11 +1843,86 @@ export default defineComponent({
 .box-container {
   border: 1px solid black;
   position: relative;
+  padding: 0;
 }
 .box-container.box-2 {
   padding: 0;
 }
 
+/* --- New / updated styles for BOX 3 & 4 and BOX 5 layout to behave like BOX 2 (closed table) --- */
+.box-labels-3-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0;
+  margin-bottom: 2px;
+}
+.box-3-4 {
+  display: flex;
+  width: 100%;
+  min-height: 90px;
+}
+.box-container.box-3-4 {
+  display: flex;
+  padding: 0;
+  overflow: hidden;
+}
+.box-3-col,
+.box-4-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid black;
+  padding: 0;
+  box-sizing: border-box;
+}
+.box-3-col:last-child,
+.box-4-col:last-child {
+  border-right: none;
+}
+.box-3-col .signature-address-section,
+.box-4-col .signature-address-section {
+  padding: 8px;
+  border-bottom: 1px solid black;
+}
+.box-3-col .address-field-3-4,
+.box-4-col .address-field-3-4 {
+  border-top: none;
+  padding: 6px 8px;
+}
+
+/* id-row used in both boxed sections so it looks like a closed table */
+.boxed-id-row {
+  display: flex;
+  border-top: 1px solid black;
+}
+.boxed-id-row .id-field {
+  flex: 1;
+  padding: 8px;
+  border-right: 1px solid black;
+  box-sizing: border-box;
+  font-size: 0.75rem;
+}
+.boxed-id-row .id-field:last-child {
+  border-right: none;
+}
+
+/* For BOX 5 notary id rows */
+.id-row-notary.boxed-id-row {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid transparent;
+}
+.id-row-notary.boxed-id-row .signature-line-group {
+  flex: 1;
+  padding: 6px 8px;
+  border-right: 1px solid black;
+  box-sizing: border-box;
+}
+.id-row-notary.boxed-id-row .signature-line-group:last-child {
+  border-right: none;
+}
+
+/* Keep existing box content styles consistent */
 .box-title {
   font-size: 0.7rem !important;
   font-weight: bold;
@@ -2194,6 +2270,12 @@ export default defineComponent({
   }
   .occupancy-columns-container {
     flex-wrap: nowrap !important;
+  }
+
+  /* Ensure boxed rows remain printed as solid lines */
+  .boxed-id-row .id-field,
+  .id-row-notary.boxed-id-row .signature-line-group {
+    border-right: 1px solid black !important;
   }
 }
 </style>

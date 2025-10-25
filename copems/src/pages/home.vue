@@ -1,38 +1,6 @@
 <template>
   <v-app>
-    <!-- App Bar -->
-    <v-app-bar color="#1B3C53" dark app class="elevation-4">
-      <v-container
-        fluid
-        class="d-flex align-center py-0"
-        style="max-width: 100%"
-      >
-        <div class="d-flex align-center">
-          <v-img
-            src="https://www2.naga.gov.ph/wp-content/uploads/2022/05/Naga_City_Official_Seal-1.png"
-            alt="LGU Seal"
-            width="85"
-            height="75"
-            contain
-            class="me-4"
-          />
-          <div>
-            <div class="appbar-title-1">REPUBLIC OF THE PHILIPPINES</div>
-            <div class="appbar-title-2">CITY GOVERNMENT OF NAGA</div>
-          </div>
-        </div>
-
-        <div class="d-flex justify-center flex-grow-1"></div>
-
-        <div class="d-flex align-center">
-          <v-btn text class="mx-2 appbar-link" to="/login">Login</v-btn>
-          <v-btn text class="mx-2 appbar-link">Register</v-btn>
-        </div>
-      </v-container>
-    </v-app-bar>
-
     <v-main>
-      <!-- HERO SECTION -->
       <v-container fluid class="pa-0 hero-bg">
         <v-row
           align="center"
@@ -57,15 +25,6 @@
                 construction needs.</span
               >
             </p>
-            <v-btn
-              color="primary"
-              class="elevation-2 px-8 py-4 rounded-pill hero-cta"
-              size="x-large"
-              @click="scrollToServices"
-            >
-              <v-icon left>mdi-arrow-down-bold</v-icon>
-              Start Application
-            </v-btn>
           </v-col>
           <v-col
             cols="12"
@@ -82,7 +41,6 @@
         </v-row>
       </v-container>
 
-      <!-- SERVICES SECTION -->
       <v-container class="my-16">
         <div class="text-center mb-10" ref="servicesSection">
           <h1 class="display-1 font-weight-bold gradient-section-title">
@@ -110,6 +68,13 @@
                 <v-btn color="primary" class="ma-2 rounded-pill" to="/login"
                   >Apply Now</v-btn
                 >
+                <v-btn
+                  color="primary"
+                  outlined
+                  class="ma-2 rounded-pill to"
+                  to="/bpinquiry"
+                  >Inquiry
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -130,13 +95,15 @@
                 <v-btn color="primary" class="ma-2 rounded-pill"
                   >Apply Now</v-btn
                 >
+                <v-btn color="primary" outlined class="ma-2 rounded-pill"
+                  >Inquiry</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-col>
         </v-row>
       </v-container>
 
-      <!-- FEATURES SECTION -->
       <v-container class="my-16">
         <div class="text-center mb-10">
           <h2 class="display-1 font-weight-bold gradient-section-title">
@@ -226,7 +193,6 @@
         </v-row>
       </v-container>
 
-      <!-- PROCESS SECTION -->
       <v-container class="my-16">
         <div class="text-center mb-10">
           <h2 class="display-1 font-weight-bold gradient-section-title">
@@ -296,7 +262,6 @@
       </v-container>
     </v-main>
 
-    <!-- FOOTER -->
     <v-footer color="#1B3C53" dark padless>
       <v-container>
         <v-row>

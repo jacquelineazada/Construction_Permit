@@ -1,133 +1,161 @@
 <template>
   <v-app>
-    <!-- App Bar -->
-    <v-app-bar flat color="#0000CC" dark height="88" app>
-      <v-toolbar-title class="font-weight-bold">
-        <v-icon left>mdi-office-building-outline</v-icon>
-        Building Permit Portal
-      </v-toolbar-title>
-    </v-app-bar>
-
-    <v-main class="bg-grey-lighten-3">
-      <!-- Header -->
-      <v-card
-        flat
-        class="d-flex align-center justify-space-between px-6"
-        style="
-          background-color: white;
-          border-bottom: 1px solid #e0e0e0;
-          height: 60px;
-        "
-      >
-        <div class="d-flex align-center">
-          <v-icon color="#0000CC" class="mr-2" size="30"
-            >mdi-office-building</v-icon
-          >
-          <h2 class="mb-0 font-weight-bold page-title-responsive gradient-text">
-            Building Permit Application
-          </h2>
-        </div>
-      </v-card>
-
-      <v-container fluid style="max-width: 1400px">
-        <v-row class="mt-4" align="stretch">
-          <!-- Construction Type Guide -->
-          <v-col cols="12" md="4">
-            <v-card class="pa-4 rounded-xl card-shadow">
-              <v-card-title class="text-h6 font-weight-bold mb-2">
-                <v-icon left color="#1565c0" class="mr-2"
-                  >mdi-information-outline</v-icon
+    <v-main class="no-scroll">
+      <v-container fluid class="pa-0 content-area fill-height">
+        <v-row no-gutters class="fill-height">
+          <v-col cols="12" md="3" class="pa-0">
+            <v-card
+              flat
+              class="pa-4 quick-guide-card d-flex flex-column justify-space-between elevation-2"
+              style="
+                border-right: 1px solid #e0e0e0;
+                height: 100%;
+                background: #fcfcff;
+              "
+            >
+              <div>
+                <h4 class="mb-2 text-h5 font-weight-bold text-blue-darken-3">
+                  Building Permit Application
+                </h4>
+                <div class="text-subtitle-2 mb-6 text-blue-grey-darken-1">
+                  Follow these steps to complete your application
+                </div>
+                <v-card
+                  v-for="(step, index) in sidebarSteps"
+                  :key="index"
+                  flat
+                  :color="sidebarStep === index ? 'blue-lighten-5' : '#f6f8fa'"
+                  class="d-flex align-center pa-3 mb-4 rounded-lg quick-guide-step"
+                  :class="{
+                    'clickable-step': true,
+                    'active-step': sidebarStep === index,
+                  }"
+                  @click="goToSidebarStep(index)"
+                  elevation="sidebarStep === index ? 2 : 0"
+                  style="transition: box-shadow 0.16s, background 0.16s"
                 >
-                Construction Type Guide
-              </v-card-title>
-              <v-expansion-panels flat multiple>
-                <v-expansion-panel
-                  v-for="(item, i) in constructionTypes"
-                  :key="i"
-                  class="bg-transparent"
-                  elevation="0"
-                >
-                  <v-expansion-panel-title
-                    class="font-weight-medium text-primary"
+                  <v-avatar
+                    :color="sidebarStep === index ? 'primary' : '#2563EB'"
+                    size="36"
+                    class="white--text mr-3 quick-guide-avatar"
                   >
-                    <v-icon left small color="#0000CC" class="mr-2"
-                      >mdi-domain</v-icon
-                    >
-                    {{ item.title }}
-                  </v-expansion-panel-title>
-                  <v-expansion-panel-text>
-                    <ul class="ml-4 mb-2">
-                      <li
-                        v-for="(form, j) in item.forms"
-                        :key="j"
-                        class="font-weight-regular text-grey-darken-2"
-                      >
-                        {{ form }}
-                      </li>
-                    </ul>
-                  </v-expansion-panel-text>
-                </v-expansion-panel>
-              </v-expansion-panels>
+                    <span class="text-h6 font-weight-bold">
+                      {{ index + 1 }}
+                    </span>
+                  </v-avatar>
+                  <div class="font-weight-bold text-body-1 step-label">
+                    {{ step }}
+                  </div>
+                </v-card>
+              </div>
+              <v-spacer></v-spacer>
+              <div class="mt-4">
+                <v-btn
+                  block
+                  color="white"
+                  outlined
+                  to="/login"
+                  class="text-capitalize font-weight-bold"
+                  @click="handleLogout"
+                >
+                  <v-icon left>mdi-logout</v-icon>
+                  Logout
+                </v-btn>
+              </div>
             </v-card>
           </v-col>
 
-          <!-- Ancillary Forms -->
-          <v-col cols="12" md="8">
-            <v-card class="pa-6 rounded-xl card-shadow">
-              <v-card-title
-                class="text-h5 font-weight-bold card-title-responsive mb-1 gradient-text"
-              >
-                <v-icon left color="#1565c0" class="mr-2"
-                  >mdi-file-document-multiple-outline</v-icon
-                >
-                Ancillary Forms
-              </v-card-title>
-              <v-card-subtitle class="mt-1 text-wrap mb-4 text-grey-darken-1">
-                Click on a document type to download its specific forms.
-              </v-card-subtitle>
-              <v-row class="mt-1" align="stretch" justify="center">
-                <v-col
-                  v-for="(form, i) in ancillaryForms"
-                  :key="i"
-                  cols="12"
-                  sm="6"
-                  md="4"
-                  class="d-flex justify-center"
-                >
-                  <v-card
-                    elevation="2"
-                    class="d-flex flex-column align-center justify-center pa-4 text-center rounded-lg hoverable-card transition-ease doc-card"
-                    @click="downloadForm(form.title)"
-                  >
-                    <div
-                      class="icon-bg mb-2 d-flex align-center justify-center"
+          <v-col cols="12" md="9" class="main-content-bg pa-6">
+            <v-container fluid style="max-width: 1400px">
+              <v-row class="mt-4" align="stretch">
+                <v-col cols="12" md="4">
+                  <v-card class="pa-4 rounded-xl card-shadow">
+                    <v-card-title class="text-h6 font-weight-bold mb-2">
+                      <v-icon left color="#1565c0" class="mr-2"
+                        >mdi-information-outline</v-icon
+                      >
+                      Construction Type Guide
+                    </v-card-title>
+                    <v-expansion-panels flat multiple>
+                      <v-expansion-panel
+                        v-for="(item, i) in constructionTypes"
+                        :key="i"
+                        class="bg-transparent"
+                        elevation="0"
+                      >
+                        <v-expansion-panel-title
+                          class="font-weight-medium text-primary"
+                        >
+                          <v-icon left small color="#0000CC" class="mr-2"
+                            >mdi-domain</v-icon
+                          >
+                          {{ item.title }}
+                        </v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <ul class="ml-4 mb-2">
+                            <li
+                              v-for="(form, j) in item.forms"
+                              :key="j"
+                              class="font-weight-regular text-grey-darken-2"
+                            >
+                              {{ form }}
+                            </li>
+                          </ul>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" md="8">
+                  <v-card class="pa-6 rounded-xl card-shadow">
+                    <v-card-title
+                      class="text-h5 font-weight-bold card-title-responsive mb-1 gradient-text"
                     >
-                      <v-icon size="44" color="#0000CC">{{ form.icon }}</v-icon>
-                    </div>
-                    <v-card-text
-                      class="pa-0 font-weight-medium form-title-text"
+                      <v-icon left color="#1565c0" class="mr-2"
+                        >mdi-file-document-multiple-outline</v-icon
+                      >
+                      Ancillary Forms
+                    </v-card-title>
+                    <v-card-subtitle
+                      class="mt-1 text-wrap mb-4 text-grey-darken-1"
                     >
-                      {{ form.title }}
-                    </v-card-text>
+                      Click on a document type to download its specific forms.
+                    </v-card-subtitle>
+                    <v-row class="mt-1" align="stretch" justify="center">
+                      <v-col
+                        v-for="(form, i) in ancillaryForms"
+                        :key="i"
+                        cols="12"
+                        sm="6"
+                        md="4"
+                        class="d-flex justify-center"
+                      >
+                        <v-card
+                          elevation="2"
+                          class="d-flex flex-column align-center justify-center pa-4 text-center rounded-lg hoverable-card transition-ease doc-card"
+                          @click="downloadForm(form.title)"
+                        >
+                          <div
+                            class="icon-bg mb-2 d-flex align-center justify-center"
+                          >
+                            <v-icon size="44" color="#0000CC">{{
+                              form.icon
+                            }}</v-icon>
+                          </div>
+                          <v-card-text
+                            class="pa-0 font-weight-medium form-title-text"
+                          >
+                            {{ form.title }}
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                    <v-row justify="end" class="mt-6"> </v-row>
                   </v-card>
                 </v-col>
               </v-row>
-              <v-row justify="end" class="mt-6">
-                <v-col cols="auto">
-                  <v-btn
-                    color="#0000CC"
-                    dark
-                    elevation="2"
-                    size="x-large"
-                    class="rounded-pill font-weight-bold px-8"
-                    to="/applicant/documentaryrequirements"
-                  >
-                    Next
-                    <v-icon right>mdi-arrow-right</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-card>
+            </v-container>
           </v-col>
         </v-row>
       </v-container>
@@ -137,7 +165,34 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
+// --- Logic from Sidebar Navigation ---
+const router = useRouter();
+const sidebarStep = ref(2); // <-- SET TO 2 TO HIGHLIGHT THE 3RD ITEM
+const sidebarSteps = ref([
+  "Fill up the Unified Application Form",
+  "Upload Building Plans & Lot Plans",
+  "Download Filled-up Unified Application Form and Required Ancillary Permits ",
+]);
+
+const handleLogout = () => {
+  console.log("User logged out");
+  router.push("/login");
+};
+
+const goToSidebarStep = (index) => {
+  sidebarStep.value = index;
+  // Add navigation logic based on index
+  if (index === 0) {
+    router.push("/applicant/applicantdetails"); // Example route
+  } else if (index === 2) {
+    router.push("/applicant/uploadingofplans"); // Example route
+  }
+  // ... add other routes
+};
+
+// --- Logic from Ancillary Forms Component ---
 const constructionTypes = ref([
   {
     title: "NEW CONSTRUCTION",
@@ -207,6 +262,50 @@ function downloadForm(title) {
 </script>
 
 <style scoped>
+/* --- Styles from BuildingPermitNav --- */
+.no-scroll {
+  overflow: hidden !important;
+}
+.v-main.no-scroll {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f6fafd;
+}
+.content-area {
+  flex: 1;
+  overflow-y: auto; /* This makes the content area scrollable */
+}
+.main-content-bg {
+  background: #fafdff; /* BG for the main content column */
+}
+.quick-guide-card {
+  min-height: 100%;
+  background: #fcfcff;
+  border-right: 1px solid #e0e0e0;
+}
+.quick-guide-step {
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.quick-guide-step:hover {
+  background: #e3f0ff !important;
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.08);
+}
+.active-step {
+  background: #e7efff !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.12);
+}
+.quick-guide-avatar {
+  transition: background 0.2s;
+}
+.step-label {
+  color: #23407c;
+}
+.clickable-step {
+  cursor: pointer;
+}
+
+/* --- Styles from Ancillary Forms Component --- */
 .gradient-text {
   background: linear-gradient(90deg, #1976d2 10%, #0000cc 90%);
   -webkit-background-clip: text;
@@ -253,6 +352,38 @@ function downloadForm(title) {
   transition: box-shadow 0.22s, border-color 0.22s;
   display: flex;
 }
+.page-title-responsive {
+  font-size: 1.35rem;
+  letter-spacing: 0.02em;
+}
+
+/* --- Combined Media Queries --- */
+@media (max-width: 1200px) {
+  .page-title-responsive {
+    font-size: 1.13rem !important;
+  }
+}
+@media (max-width: 960px) {
+  /* Sidebar stacking logic */
+  .content-area {
+    overflow-y: auto;
+  }
+  .v-main.no-scroll {
+    height: auto;
+  }
+  .quick-guide-card {
+    height: auto !important;
+    min-height: auto;
+  }
+
+  /* Component-specific styles */
+  .page-title-responsive {
+    font-size: 1rem !important;
+  }
+  .card-title-responsive {
+    font-size: 1.1rem !important;
+  }
+}
 @media (max-width: 900px) {
   .doc-card {
     width: 100% !important;
@@ -274,22 +405,12 @@ function downloadForm(title) {
     width: 100% !important;
     height: 140px !important;
   }
-}
-.page-title-responsive {
-  font-size: 1.35rem;
-  letter-spacing: 0.02em;
-}
-@media (max-width: 1200px) {
-  .page-title-responsive {
-    font-size: 1.13rem !important;
-  }
-}
-@media (max-width: 960px) {
-  .page-title-responsive {
+  /* Sidebar nav styles */
+  .step-label {
     font-size: 1rem !important;
   }
-  .card-title-responsive {
-    font-size: 1.1rem !important;
+  .main-content-bg {
+    padding: 12px !important;
   }
 }
 </style>

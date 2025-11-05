@@ -68,12 +68,7 @@ const router = createRouter({
           component: () =>
             import("@/module/admin/BuildingPermit/Head/buildingofficial.vue")
         },
-                        {
-          path: "administrativeaide",
-          name: "administrativeaide",
-          component: () =>
-            import("@/module/admin/Administrative/administrativeaide.vue")
-        },
+                      
         // Locational Clearance Admin
 
         // Compliance Monitoring Admin
@@ -191,6 +186,24 @@ const router = createRouter({
         },
         // 
         // Locational Clearance Applicant
+  {
+      path: 'locational',
+      name: 'Locational',
+      component: () => import('@/module/applicant/LocationalClearance/locational.vue'), 
+     },
+
+    {
+      path: 'LCRequirement',
+      name: 'LCRequirement',
+      component: () => import('@/module/applicant/LocationalClearance/LCRequirement.vue'), 
+     },
+
+     
+      {
+      path: 'Excavation',
+      name: 'Excavation',
+      component: () => import('@/module/applicant/LocationalClearance/Excavation.vue'), 
+     },
 
         // Occupancy Permit Applicant
 

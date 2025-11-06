@@ -205,6 +205,13 @@ const router = createRouter({
       component: () => import('@/module/applicant/LocationalClearance/Excavation.vue'), 
      },
 
+      
+      {
+      path: 'NOC',
+      name: 'NOC',
+      component: () => import('@/module/applicant/LocationalClearance/NOC.vue'), 
+     },
+
         // Occupancy Permit Applicant
 
         //

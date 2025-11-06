@@ -276,11 +276,23 @@
                 variant="elevated"
                 block
                 size="large" 
-                class="btn-rounded-small"
+                class="btn-rounded-small mb-3"
                 to="/applicant/Excavation"
                 elevation="3"
               >
                 Apply for Excavation Permit
+              </v-btn>
+
+              <v-btn
+                color="blue-darken-3"
+                variant="elevated"
+                block
+                size="large" 
+                class="btn-rounded-small"
+                to="/applicant/NOC"
+                elevation="3"
+              >
+                Apply for NOC
               </v-btn>
             </v-card>
 

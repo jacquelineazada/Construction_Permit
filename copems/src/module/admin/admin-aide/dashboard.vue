@@ -1,28 +1,53 @@
 <template>
-  <div style="min-height: 100vh; background-color: #f4f6f8;">
-    <v-container fluid class="pa-6">
-      <!-- Header Section -->
-      <v-row class="mb-8">
-        <v-col cols="12">
-          <v-card class="elevation-2 rounded-xl pa-6 d-flex justify-space-between align-center bg-white">
-            <div class="d-flex align-center">
-              <v-avatar color="primary" variant="tonal" size="64" class="mr-5">
-                <v-icon size="36">mdi-shield-account</v-icon>
-              </v-avatar>
-              <div>
-                <h1 class="text-h4 font-weight-bold text-primary mb-1">Admin Aide Dashboard</h1>
-                <div class="d-flex align-center">
-                  <v-icon size="small" color="grey-darken-1" class="mr-2">mdi-check-decagram-outline</v-icon>
-                  <span class="text-subtitle-1 text-grey-darken-1">Review and verify applicant data securely</span>
-                </div>
+  <v-app>
+    <!-- App Bar -->
+    <v-app-bar flat color="#0000CC" dark height="88" class="elevation-1">
+      <v-container fluid class="d-flex align-center py-0" style="max-width: 100%">
+        <div class="d-flex align-center">
+          <v-img
+            src="https://www2.naga.gov.ph/wp-content/uploads/2022/05/Naga_City_Official_Seal-1.png"
+            alt="LGU Seal"
+            width="85"
+            height="75"
+            contain
+            class="me-4"
+          />
+          <div>
+            <div style="font-size: 12px; font-weight: 400; color: white; line-height: 1.2">
+              REPUBLIC OF THE PHILIPPINES
+            </div>
+            <div style="font-size: 15px; font-weight: 700; color: white; line-height: 1.2">
+              CITY GOVERNMENT OF NAGA
+            </div>
+          </div>
+        </div>
+        <v-spacer></v-spacer>
+        <v-btn color="white" variant="tonal" prepend-icon="mdi-logout" class="text-none font-weight-bold px-6 rounded-lg" size="large" @click="logout">
+          Logout
+        </v-btn>
+      </v-container>
+    </v-app-bar>
+
+    <v-main class="bg-grey-lighten-4">
+      <!-- Hero Section -->
+      <div style="background: #0000CC; height: 120px;"></div>
+
+      <v-container fluid class="px-4 py-6 mx-auto" style="max-width: 1300px; margin-top: -60px;">
+        <!-- Header / Title Section -->
+        <v-card class="elevation-2 rounded-xl px-6 py-4 mb-8 bg-white border-left-indicator" style="border-left-color: #0000CC">
+          <div class="d-flex align-center">
+            <v-avatar color="primary" variant="tonal" size="72" class="mr-6">
+              <v-icon size="40">mdi-shield-account</v-icon>
+            </v-avatar>
+            <div>
+              <h1 class="text-h3 font-weight-black gradient-text mb-1">Admin Aide Dashboard</h1>
+              <div class="d-flex align-center">
+                <v-icon size="small" color="secondary" class="mr-2">mdi-check-decagram</v-icon>
+                <span class="text-subtitle-1 text-grey-darken-2 font-weight-medium">Secure Applicant Verification & Data Review System</span>
               </div>
             </div>
-            <v-btn color="error" variant="tonal" prepend-icon="mdi-logout" class="text-none font-weight-bold px-6 rounded-lg" size="large" @click="logout">
-              Logout
-            </v-btn>
-          </v-card>
-        </v-col>
-      </v-row>
+          </div>
+        </v-card>
 
       <!-- Stats Section -->
       <v-row class="mb-8">
@@ -116,7 +141,6 @@
           </v-card>
         </v-col>
       </v-row>
-    </v-container>
 
     <!-- Review Modal -->
     <v-dialog v-model="reviewDialog" max-width="1000" persistent scrollable>
@@ -150,7 +174,7 @@
           </v-tab>
           <v-tab value="requirements" class="text-none font-weight-bold text-subtitle-1 py-6">
             <v-icon start class="mr-3">mdi-file-check-outline</v-icon>
-            Locational Clearance Requirements
+            Locational Clearance Requirements Submission
           </v-tab>
         </v-tabs>
 
@@ -252,9 +276,9 @@
             <v-window-item value="requirements">
               <div class="pa-8">
                 <v-card class="elevation-2 rounded-xl bg-white overflow-hidden">
-                  <v-toolbar color="grey-lighten-4" density="compact" class="px-4 border-bottom">
+                  <v-toolbar color="blue-lighten-5" density="compact" class="px-4 border-bottom">
                     <v-icon color="primary" class="mr-3">mdi-file-document-check-outline</v-icon>
-                    <span class="text-subtitle-1 font-weight-bold text-grey-darken-3">Submission Checklist</span>
+                    <span class="text-subtitle-1 font-weight-bold text-primary">Required Documents</span>
                   </v-toolbar>
                   <div class="pa-8">
                     <div v-if="selectedApplicant.requirements && selectedApplicant.requirements.length > 0">
@@ -314,7 +338,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
@@ -341,7 +367,7 @@ export default {
       ],
       applicants: [
         { 
-          id: 1, referenceNo: "BP-2026-001", name: "Juan Dela Cruz", permitType: "Building Permit", date: "2026-05-01", status: "Pending",
+          id: 1, referenceNo: "LC-2026-001", name: "Juan Dela Cruz", permitType: "Building Permit", date: "2026-05-01", status: "Pending",
           applicantType: "Individual",
           projectInfo: { projectName: "Two-Story Residential House", location: "Brgy. San Jose, Quezon City", totalArea: "150 sqm" },
           contactInfo: { email: "juan.delacruz@example.com", phone: "09123456789" },
@@ -364,7 +390,7 @@ export default {
           ]
         },
         { 
-          id: 3, referenceNo: "BP-2026-015", name: "Jose Rizal", permitType: "Building Permit", date: "2026-05-03", status: "Under Review",
+          id: 3, referenceNo: "LC-2026-015", name: "Jose Rizal", permitType: "Building Permit", date: "2026-05-03", status: "Under Review",
           applicantType: "Individual",
           projectInfo: { projectName: "Library Renovation", location: "Calamba, Laguna", totalArea: "200 sqm" },
           contactInfo: { email: "j.rizal@illustrado.ph", phone: "09112223333" },
@@ -374,7 +400,7 @@ export default {
           ]
         },
         { 
-          id: 4, referenceNo: "OP-2026-088", name: "Andres Bonifacio", permitType: "Occupancy Permit", date: "2026-05-04", status: "Pending",
+          id: 4, referenceNo: "LC-2026-088", name: "Andres Bonifacio", permitType: "Occupancy Permit", date: "2026-05-04", status: "Pending",
           applicantType: "Organization",
           projectInfo: { projectName: "Katipunan Headquarters", location: "Tondo, Manila", totalArea: "500 sqm" },
           contactInfo: { email: "supremo@kkk.org", phone: "09887776666" },
@@ -439,6 +465,12 @@ export default {
 </script>
 
 <style scoped>
+.gradient-text {
+  background: linear-gradient(90deg, #0000CC 0%, #1565C0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .border-bottom {
   border-bottom: 1px solid #eef0f2 !important;
 }

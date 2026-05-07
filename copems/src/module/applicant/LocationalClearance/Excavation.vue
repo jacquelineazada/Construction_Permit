@@ -1063,7 +1063,7 @@ export default defineComponent({
         applicationNo: '112-2025',
         egppNo: 'EGPP-003-2025',
         buildingPermitNo: 'BP-01-2025',
-        issuedBy: 'ELMER T. ALBO',
+        issuedBy: '',
         dateIssued: '02/10/2025',
       },
 

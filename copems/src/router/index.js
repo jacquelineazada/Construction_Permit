@@ -22,6 +22,11 @@ const router = createRouter({
           component: () => import("@/pages/login.vue"),
         },
         {
+          path: "login/admin-aide",
+          name: "AdminAideLogin",
+          component: () => import("@/pages/AdminAideLogin.vue"),
+        },
+        {
           path: "register",
           name: "register",
           component: () => import("@/pages/register.vue"),
@@ -41,6 +46,18 @@ const router = createRouter({
           path: "AdminLogin",
           name: "AdminLogin",
           component: () => import("@/pages/AdminLogin.vue"),
+        },
+        {
+          path: "admin-aide",
+          name: "AdminAideDashboard",
+          component: () => import("@/module/admin/admin-aide/dashboard.vue"),
+          beforeEnter: (to, from, next) => {
+            if (localStorage.getItem("admin_aide_authenticated") === "true") {
+              next();
+            } else {
+              next("/login/admin-aide");
+            }
+          }
         },
 
         // Building Permit Admin
@@ -62,13 +79,13 @@ const router = createRouter({
           component: () =>
             import("@/module/admin/BuildingPermit/Evaluators/evaluationplan.vue")
         },
-                {
+        {
           path: "buildingofficial",
           name: "buildingofficial",
           component: () =>
             import("@/module/admin/BuildingPermit/Head/buildingofficial.vue")
         },
-                      
+
         // Locational Clearance Admin
 
         // Compliance Monitoring Admin
@@ -86,7 +103,7 @@ const router = createRouter({
 
 
         // Building Permit Applicant
-                {
+        {
           path: "applicantdetails",
           name: "applicantdetails",
           component: () =>
@@ -140,7 +157,7 @@ const router = createRouter({
           path: "payment",
           name: "payment",
           component: () =>
-            import("@/module/applicant/BuildingPermit/UnifiedApplication/payment.vue")  
+            import("@/module/applicant/BuildingPermit/UnifiedApplication/payment.vue")
         },
         {
           path: "architectural",
@@ -186,31 +203,31 @@ const router = createRouter({
         },
         // 
         // Locational Clearance Applicant
-  {
-      path: 'locational',
-      name: 'Locational',
-      component: () => import('@/module/applicant/LocationalClearance/locational.vue'), 
-     },
+        {
+          path: 'locational',
+          name: 'Locational',
+          component: () => import('@/module/applicant/LocationalClearance/locational.vue'),
+        },
 
-    {
-      path: 'LCRequirement',
-      name: 'LCRequirement',
-      component: () => import('@/module/applicant/LocationalClearance/LCRequirement.vue'), 
-     },
+        {
+          path: 'LCRequirement',
+          name: 'LCRequirement',
+          component: () => import('@/module/applicant/LocationalClearance/LCRequirement.vue'),
+        },
 
-     
-      {
-      path: 'Excavation',
-      name: 'Excavation',
-      component: () => import('@/module/applicant/LocationalClearance/Excavation.vue'), 
-     },
 
-      
-      {
-      path: 'NOC',
-      name: 'NOC',
-      component: () => import('@/module/applicant/LocationalClearance/NOC.vue'), 
-     },
+        {
+          path: 'Excavation',
+          name: 'Excavation',
+          component: () => import('@/module/applicant/LocationalClearance/Excavation.vue'),
+        },
+
+
+        {
+          path: 'NOC',
+          name: 'NOC',
+          component: () => import('@/module/applicant/LocationalClearance/NOC.vue'),
+        },
 
         // Occupancy Permit Applicant
 
